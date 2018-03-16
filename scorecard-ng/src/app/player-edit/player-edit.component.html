@@ -1,0 +1,9 @@
+<form [formGroup]="playerForm" (ngSubmit)="onSave()">
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Name" formControlName="name"/>
+    </mat-form-field>
+    <button mat-button type="submit">Save</button>
+</form>
+
+<p>Form value: {{ playerForm.value | json }}</p>
+<p>Form status: {{ playerForm.status | json }}</p>
