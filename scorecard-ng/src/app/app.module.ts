@@ -9,6 +9,8 @@ import {PlayerEditComponent} from './player-edit';
 import {PageNotFoundComponent} from './page-not-found';
 import {HomeComponent} from './home';
 import {AppRoutingModule} from './app-routing.module';
+import {CoreModule} from './core';
+import {SharedModule} from './shared';
 
 @NgModule({
     declarations: [
@@ -23,7 +25,9 @@ import {AppRoutingModule} from './app-routing.module';
         MatFormFieldModule,
         MatInputModule,
         ReactiveFormsModule,
-        AppRoutingModule
+        CoreModule,
+        AppRoutingModule,
+        SharedModule
     ],
     providers: [],
     bootstrap: [AppComponent]
