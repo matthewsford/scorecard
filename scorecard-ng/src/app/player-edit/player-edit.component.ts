@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     selector: 'app-player-edit',
@@ -9,7 +10,8 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 export class PlayerEditComponent implements OnInit {
     playerForm: FormGroup;
 
-    constructor(private fb: FormBuilder) { // <--- inject FormBuilder
+    constructor(private fb: FormBuilder,
+                private http: HttpClient) { // <--- inject FormBuilder
         this.createForm();
     }
 
