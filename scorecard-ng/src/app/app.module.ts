@@ -4,9 +4,10 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatFormFieldModule, MatInputModule} from '@angular/material';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {StoreModule} from '@ngrx/store';
-import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
+import {StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
 
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
@@ -15,7 +16,7 @@ import {HomeComponent} from './home';
 import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core';
 import {SharedModule} from './shared';
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 import {counterReducer} from './counter';
 
 const reducers = {
@@ -38,6 +39,7 @@ const reducers = {
         MatFormFieldModule,
         MatInputModule,
         ReactiveFormsModule,
+        ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
         StoreModule.forRoot(reducers),
         StoreDevtoolsModule.instrument({
             maxAge: 25,
