@@ -53,7 +53,7 @@ const reducers = {
         })
     ],
     providers: [],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule {
 }
