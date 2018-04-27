@@ -1,0 +1,15 @@
+<form [formGroup]="registrationForm" (ngSubmit)="onRegister()">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Username" formControlName="username"/>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="password" placeholder="Password" formControlName="password"/>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword"/>
+  </mat-form-field>
+  <button mat-button type="submit">Register</button>
+</form>
+
+<p>Form value: {{ registrationForm.value | json }}</p>
+<p>Form status: {{ registrationForm.status | json }}</p>
