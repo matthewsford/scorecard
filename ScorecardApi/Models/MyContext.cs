@@ -1,17 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-namespace ScorecardApi.Models
-{
-  public class MyContext : DbContext
-  {
+namespace ScorecardApi.Models {
+  public class MyContext : DbContext {
     public DbSet<Player> Players { get; set; }
 
-    public MyContext(DbContextOptions options) : base(options)
-    {
-    }
+    public MyContext(DbContextOptions options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) { }
   }
 }

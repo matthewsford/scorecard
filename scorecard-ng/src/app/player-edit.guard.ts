@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+
 import {PlayerEditComponent} from './player-edit';
-import {Observable} from 'rxjs/index';
 
 @Injectable()
 export class PlayerEditGuard implements CanDeactivate<PlayerEditComponent> {

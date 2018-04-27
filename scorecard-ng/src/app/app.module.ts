@@ -20,12 +20,12 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule, MatToolbarModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule, MatToolbarModule,
+  MatSidenavModule,
+  MatIconModule,
+  MatListModule, MatTableModule, MatPaginatorModule, MatSortModule,
 } from '@angular/material';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
@@ -36,7 +36,6 @@ import {NgxsLoggerPluginModule} from '@ngxs/logger-plugin';
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
 import {PageNotFoundComponent} from './page-not-found';
-import {HomeComponent} from './home';
 import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core';
 import {SharedModule} from './shared';
@@ -45,52 +44,61 @@ import {PlayerService} from './player.service';
 import {LoginPageComponent} from './login-page';
 import {RegistrationPageComponent} from './registration-page';
 import {AccountService} from './account.service';
-import {AppNavComponent} from './main-nav/app-nav.component';
+import {AppNavComponent} from './app-nav/app-nav.component';
 import {AppShellComponent} from './app-shell/app-shell.component';
 import {PlayerEditGuard} from './player-edit.guard';
 import {AppState, RouterState} from './shared';
+import {DashboardComponent} from './dashboard';
+import {PlayerTableComponent} from './player-table';
+import {PlayerResolver} from "./player.resolve";
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        PlayerEditComponent,
-        PageNotFoundComponent,
-        HomeComponent,
-        LoginPageComponent,
-        RegistrationPageComponent,
-        AppNavComponent,
-        AppShellComponent
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        NgxsModule.forRoot([
-            AppState,
-            RouterState,
-        ]),
-        NgxsReduxDevtoolsPluginModule.forRoot(),
-        NgxsLoggerPluginModule.forRoot(),
-        HttpClientModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
-        CoreModule,
-        AppRoutingModule,
-        SharedModule,
-        LayoutModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatListModule
-    ],
-    providers: [
-        AccountService,
-        PlayerService,
-        PlayerEditGuard,
-    ],
-    bootstrap: [AppComponent],
+  declarations: [
+    AppComponent,
+    PlayerEditComponent,
+    PageNotFoundComponent,
+    LoginPageComponent,
+    RegistrationPageComponent,
+    AppNavComponent,
+    AppShellComponent,
+    DashboardComponent,
+    PlayerTableComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    NgxsModule.forRoot([
+      AppState,
+      RouterState,
+    ]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot(),
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+    CoreModule,
+    AppRoutingModule,
+    SharedModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
+  ],
+  providers: [
+    AccountService,
+    PlayerEditGuard,
+    PlayerResolver,
+    PlayerService,
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+}
 
