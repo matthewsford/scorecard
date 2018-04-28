@@ -25,8 +25,10 @@ namespace ScorecardApi.Controllers {
     }
 
     [HttpGet("{id}")]
-    public IEnumerable<Player> Get(Guid id) {
-      return from p in _context.Players where p.Id == id select p;
+    public Player Get(Guid id)
+    {
+      return new Player(Guid.NewGuid(), "Jim bob Doe");
+      // return from p in _context.Players where p.Id == id select p;
     }
 
     [HttpPost]

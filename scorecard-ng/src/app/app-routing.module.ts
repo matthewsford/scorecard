@@ -10,59 +10,74 @@ import {PlayerEditGuard} from './player-edit.guard';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
 import {PlayerResolver} from './player.resolve';
+import {PlayerService} from './player.service';
+import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
+import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 
 const appRoutes: Routes = [
-  {
-    path: 'login',
-    component: LoginPageComponent,
-  },
-  {
-    path: 'register',
-    component: RegistrationPageComponent,
-  },
-  {
-    path: '',
-    component: AppShellComponent,
-    children: [
-      {
-        path: 'dashboard',
-        component: DashboardComponent,
-      },
-      {
-        path: 'players',
-        component: PlayerTableComponent,
-      },
-      {
-        path: 'players/:id',
-        component: PlayerEditComponent,
-        canDeactivate: [PlayerEditGuard],
-        resolve: {
-          player: PlayerResolver
-        }
-      },
-      {
+    {
+        path: 'login',
+        component: LoginPageComponent,
+    },
+    {
+        path: 'register',
+        component: RegistrationPageComponent,
+    },
+    {
         path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
-      },
-      {path: '**', component: PageNotFoundComponent},
-    ]
-  },
+        component: AppShellComponent,
+        children: [
+            {
+                path: 'dashboard',
+                component: DashboardComponent,
+            },
+            {
+                path: 'leaderboards',
+                component: LeaderboardsTableComponent,
+            },
+            {
+                path: 'leaderboards/:id',
+                component: LeaderboardComponent,
+            },
+            {
+                path: 'players',
+                component: PlayerTableComponent,
+            },
+            {
+                path: 'players/:id',
+                component: PlayerEditComponent,
+                canDeactivate: [PlayerEditGuard],
+                resolve: {
+                    player: PlayerResolver
+                }
+            },
+            {
+                path: '',
+                redirectTo: '/dashboard',
+                pathMatch: 'full'
+            },
+            {path: '**', component: PageNotFoundComponent},
+        ]
+    },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(
-      appRoutes,
-      {
-        enableTracing: true,
-        preloadingStrategy: PreloadAllModules,
-      }
-    )
-  ],
-  exports: [
-    RouterModule
-  ]
+    imports: [
+        RouterModule.forRoot(
+            appRoutes,
+            {
+                enableTracing: true,
+                preloadingStrategy: PreloadAllModules,
+            }
+        )
+    ],
+    exports: [
+        RouterModule
+    ],
+    providers: [
+        PlayerService,
+        PlayerResolver,
+    ],
 })
 export class AppRoutingModule {
 }

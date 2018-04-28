@@ -8,7 +8,23 @@ export class PlayerService {
     constructor(private http: HttpClient) {
     }
 
-    getPlayers(): Observable<Player[]> {
+    public createPlayer(player: Player): Observable<Player> {
+        return this.http.post<Player>('/api/players', player);
+    }
+
+    public getPlayers(): Observable<Player[]> {
         return this.http.get<Player[]>('/api/players');
+    }
+
+    public getPlayer(id: string): Observable<Player> {
+        return this.http.get<Player>(`/api/players/${id}`);
+    }
+
+    public updatePlayer(player: Player): Observable<Player> {
+        return this.http.patch<Player>(`/api/players/${player.id}`, player);
+    }
+
+    public deletePlayer(id: string): Observable<Player> {
+        return this.http.delete<Player>(`/api/players/${id}`);
     }
 }

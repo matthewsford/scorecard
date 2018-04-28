@@ -51,6 +51,10 @@ import {AppState, RouterState} from './shared';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
 import {PlayerResolver} from "./player.resolve";
+import { GameEditComponent } from './game-edit/game-edit.component';
+import { GamesTableComponent } from './games-table/games-table.component';
+import { LeaderboardsTableComponent } from './leaderboards-table/leaderboards-table.component';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +66,11 @@ import {PlayerResolver} from "./player.resolve";
     AppNavComponent,
     AppShellComponent,
     DashboardComponent,
-    PlayerTableComponent
+    PlayerTableComponent,
+    GameEditComponent,
+    GamesTableComponent,
+    LeaderboardsTableComponent,
+    LeaderboardComponent
   ],
   imports: [
     BrowserModule,
@@ -94,8 +102,6 @@ import {PlayerResolver} from "./player.resolve";
   providers: [
     AccountService,
     PlayerEditGuard,
-    PlayerResolver,
-    PlayerService,
   ],
   bootstrap: [AppComponent],
 })

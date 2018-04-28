@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 
 import {Player} from '../player';
 import {SetUsername} from '../shared/app.actions';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-player-edit',
@@ -21,7 +22,8 @@ export class PlayerEditComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private playerService: PlayerService,
               private route: ActivatedRoute,
-              private store: Store) {
+              private store: Store,
+              private http: HttpClient) {
   }
 
   ngOnInit() {
