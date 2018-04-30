@@ -4,16 +4,20 @@ import {Observable} from 'rxjs/Observable';
 
 import {PlayerEditComponent} from './player-edit';
 
+export interface CanLoseData {
+    isDirty: boolean;
+    resourceDescription: string;
+}
+
 @Injectable()
-export class PlayerEditGuard implements CanDeactivate<PlayerEditComponent> {
-    canDeactivate(component: PlayerEditComponent,
+export class CanLoseDataGuard implements CanDeactivate<CanLoseData> {
+    canDeactivate(component: CanLoseData,
                   currentRoute: ActivatedRouteSnapshot,
                   currentState: RouterStateSnapshot,
                   nextState?: RouterStateSnapshot):
         Observable<boolean> | Promise<boolean> | boolean {
         if (component.isDirty) {
-            const title = component.name || '(new player)';
-            return confirm(`Lose all changes to ${title}`);
+            return confirm(`Lose all changes to ${component.resourceDescription}`);
         }
     }
 }

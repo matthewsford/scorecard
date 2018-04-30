@@ -6,13 +6,14 @@ import {PageNotFoundComponent} from './page-not-found';
 import {RegistrationPageComponent} from './registration-page';
 import {LoginPageComponent} from './account/login-page';
 import {AppShellComponent} from './app-shell/app-shell.component';
-import {PlayerEditGuard} from './player-edit.guard';
+import {CanLoseDataGuard} from './can-lose-data.guard';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
 import {PlayerResolver} from './player.resolve';
 import {PlayerService} from './player.service';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
+import {IsAuthenticatedGuard} from './auth.guard';
 
 const appRoutes: Routes = [
     {
@@ -30,23 +31,28 @@ const appRoutes: Routes = [
             {
                 path: 'dashboard',
                 component: DashboardComponent,
+                canActivate: [IsAuthenticatedGuard],
             },
             {
                 path: 'leaderboards',
                 component: LeaderboardsTableComponent,
+                canActivate: [IsAuthenticatedGuard],
             },
             {
                 path: 'leaderboards/:id',
                 component: LeaderboardComponent,
+                canActivate: [IsAuthenticatedGuard],
             },
             {
                 path: 'players',
                 component: PlayerTableComponent,
+                canActivate: [IsAuthenticatedGuard],
             },
             {
                 path: 'players/:id',
                 component: PlayerEditComponent,
-                canDeactivate: [PlayerEditGuard],
+                canActivate: [IsAuthenticatedGuard],
+                canDeactivate: [CanLoseDataGuard],
                 resolve: {
                     player: PlayerResolver
                 }

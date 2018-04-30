@@ -9,13 +9,14 @@ import {tap} from 'rxjs/operators';
 
 import {Player} from '../player';
 import {SetUsername} from '../shared/app.actions';
+import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
     selector: 'app-player-edit',
     templateUrl: './player-edit.component.html',
     styleUrls: ['./player-edit.component.scss']
 })
-export class PlayerEditComponent implements OnInit {
+export class PlayerEditComponent implements OnInit, CanLoseData {
     private player: Player;
     formGroup: FormGroup;
 
@@ -56,5 +57,9 @@ export class PlayerEditComponent implements OnInit {
 
     get isDirty(): boolean {
         return this.formGroup.dirty;
+    }
+
+    get resourceDescription(): string {
+        return this.name || '(new player)';
     }
 }

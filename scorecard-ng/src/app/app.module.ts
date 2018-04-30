@@ -50,7 +50,7 @@ import {RegistrationPageComponent} from './registration-page';
 import {AccountService} from './account.service';
 import {AppNavComponent} from './app-nav/app-nav.component';
 import {AppShellComponent} from './app-shell/app-shell.component';
-import {PlayerEditGuard} from './player-edit.guard';
+import {CanLoseDataGuard} from './can-lose-data.guard';
 import {AppState, RouterState} from './shared';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
@@ -58,6 +58,8 @@ import {GameEditComponent} from './game-edit/game-edit.component';
 import {GamesTableComponent} from './games-table/games-table.component';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
+import {AuthService} from './auth.service';
+import {IsAuthenticatedGuard} from './auth.guard';
 
 @NgModule({
     declarations: [
@@ -106,7 +108,9 @@ import {LeaderboardComponent} from './leaderboard/leaderboard.component';
     ],
     providers: [
         AccountService,
-        PlayerEditGuard,
+        AuthService,
+        CanLoseDataGuard,
+        IsAuthenticatedGuard,
     ],
     bootstrap: [AppComponent],
 })
