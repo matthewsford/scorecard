@@ -4,7 +4,7 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {PlayerEditComponent} from './player-edit';
 import {PageNotFoundComponent} from './page-not-found';
 import {RegistrationPageComponent} from './registration-page';
-import {LoginPageComponent} from './login-page';
+import {LoginPageComponent} from './account/login-page';
 import {AppShellComponent} from './app-shell/app-shell.component';
 import {PlayerEditGuard} from './player-edit.guard';
 import {DashboardComponent} from './dashboard';

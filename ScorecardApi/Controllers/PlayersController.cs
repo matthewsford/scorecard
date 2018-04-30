@@ -20,8 +20,14 @@ namespace ScorecardApi.Controllers {
 
     [HttpGet]
     public IEnumerable<Player> Get() {
-      _logger.Warning("returning students");
-      return from p in _context.Players select p;
+      // return from p in _context.Players select p;
+      var players = new LinkedList<Player>();
+      for (var i=0; i < 200; i++)
+      {
+        players.AddLast(new Player(Guid.NewGuid(), $"Player {i}"));
+      }
+
+      return players;
     }
 
     [HttpGet("{id}")]

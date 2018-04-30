@@ -1,16 +1,19 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
+import {BreakpointObserver} from '@angular/cdk/layout';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
     private loading: boolean;
 
-    constructor(private router: Router) {
+    constructor(
+        private breakpointObserver: BreakpointObserver,
+        private router: Router) {
         router.events.subscribe((routerEvent: Event) => {
             this.checkRouterEvent(routerEvent);
         });

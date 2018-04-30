@@ -1,8 +1,7 @@
 import {DataSource} from '@angular/cdk/collections';
 import {MatPaginator, MatSort} from '@angular/material';
-import {map} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {Observable, of as observableOf, merge} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
 
 import {Player} from '../player';
 import {PlayerService} from '../player.service';
@@ -27,25 +26,25 @@ export class PlayerTableDataSource extends DataSource<Player> {
      * @returns A stream of the items to be rendered.
      */
     connect(): Observable<Player[]> {
-        const playersSub = this.playerService.getPlayers()
-            .subscribe(players => {
 
-            });
-
-        // Combine everything that affects the rendered data into one update
-        // stream for the data-table to consume.
-        const dataMutations = [
-            playersSub,
+        const dataMutations$ = merge(
             this.paginator.page,
             this.sort.sortChange
-        ];
+        );
 
-        // Set the paginators length
-        this.paginator.length = players.length;
-
-        return merge(...dataMutations).pipe(map(() => {
-            return this.getPagedData(this.getSortedData(playersSub));
-        }));
+        return this.playerService
+            .getPlayers()
+            .pipe(
+                tap(players => this.paginator.length = players.length),
+                switchMap(players => dataMutations$.pipe(
+                    map(() => this.getPagedData(this.getSortedData([...players])))
+                )));
+        /*                switchMap(players => {
+                            return merge(...dataMutations).pipe(map(() => {
+                                return this.getPagedData(this.getSortedData(players));
+                            }));
+                        })
+                    );*/
     }
 
     /**
@@ -59,34 +58,30 @@ export class PlayerTableDataSource extends DataSource<Player> {
      * Paginate the data (client-side). If you're using server-side pagination,
      * this would be replaced by requesting the appropriate data from the server.
      */
-    private getPagedData(data$: Observable<Player[]>): Observable<Player[]> {
-        return data$.map(data => {
-            const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-            return data.splice(startIndex, this.paginator.pageSize);
-        });
+    private getPagedData(data: Player[]): Player[] {
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        return data.splice(startIndex, this.paginator.pageSize);
     }
 
     /**
      * Sort the data (client-side). If you're using server-side sorting,
      * this would be replaced by requesting the appropriate data from the server.
      */
-    private getSortedData(data$: Observable<Player[]>): Observable<Player[]> {
-        return data$.map(data => {
-            if (!this.sort.active || this.sort.direction === '') {
-                return data;
-            }
+    private getSortedData(data: Player[]): Player[] {
+        if (!this.sort.active || this.sort.direction === '') {
+            return data;
+        }
 
-            return data.sort((a, b) => {
-                const isAsc = this.sort.direction === 'asc';
-                switch (this.sort.active) {
-                    case 'name':
-                        return compare(a.name, b.name, isAsc);
-                    case 'id':
-                        return compare(+a.id, +b.id, isAsc);
-                    default:
-                        return 0;
-                }
-            });
+        return data.sort((a, b) => {
+            const isAsc = this.sort.direction === 'asc';
+            switch (this.sort.active) {
+                case 'name':
+                    return compare(a.name, b.name, isAsc);
+                case 'id':
+                    return compare(a.id, b.id, isAsc);
+                default:
+                    return 0;
+            }
         });
     }
 }
