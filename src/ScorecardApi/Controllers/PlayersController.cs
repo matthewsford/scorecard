@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using ScorecardApi.Models;
 using Serilog;
 
@@ -24,16 +25,16 @@ namespace ScorecardApi.Controllers {
       var players = new LinkedList<Player>();
       for (var i=0; i < 200; i++)
       {
-        players.AddLast(new Player(Guid.NewGuid(), $"Player {i}"));
+        players.AddLast(new Player($"Player {i}"));
       }
 
       return players;
     }
 
     [HttpGet("{id}")]
-    public Player Get(Guid id)
+    public Player Get(ObjectId id)
     {
-      return new Player(Guid.NewGuid(), "Jim bob Doe");
+      return new Player("Jim bob Doe");
       // return from p in _context.Players where p.Id == id select p;
     }
 
@@ -44,14 +45,14 @@ namespace ScorecardApi.Controllers {
     }
 
     [HttpPut("{id}")]
-    public async void Patch(Guid id, [FromBody] Player value) {
+    public async void Patch(ObjectId id, [FromBody] Player value) {
       var matchingPlayers = from p in _context.Players where p.Id == id select p;
       matchingPlayers.ToList().ForEach(p => { p.Name = value.Name; });
       await _context.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
-    public async void Delete(Guid id) {
+    public async void Delete(ObjectId id) {
       var players = from p in _context.Players where p.Id == id select p;
       await players.ForEachAsync(p => _context.Players.Remove(p));
       await _context.SaveChangesAsync();

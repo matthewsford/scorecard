@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using ScorecardApi.Models;
 using Serilog;
 
@@ -17,8 +17,14 @@ namespace ScorecardApi {
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
       services.AddSingleton(Log.Logger);
-      services.AddDbContext<MyContext>(options =>
-        options.UseInMemoryDatabase("MyDatabase"));
+
+      var connectionString = Configuration["MongoDbConnectionString"];
+      var client = new MongoClient(connectionString);
+      var database = client.GetDatabase("scorecard");
+      services.AddSingleton<IMongoDatabase>(database);
+      var collection = database.GetCollection<Player>("players");
+      collection.InsertOne(new Player("Jim Bob !Fake!"));
+
       services.AddMvc();
     }
 

@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using ScorecardApi.Models;
 using Serilog;
 
@@ -41,7 +42,7 @@ namespace ScorecardApi.Controllers {
     }
 
     [HttpGet("{id}")]
-    public IEnumerable<Player> Get(Guid id) {
+    public IEnumerable<Player> Get(ObjectId id) {
       return from p in _context.Players where p.Id == id select p;
     }
 
@@ -66,14 +67,14 @@ namespace ScorecardApi.Controllers {
     }
 
     [HttpPut("{id}")]
-    public async void Patch(Guid id, [FromBody] Player value) {
+    public async void Patch(ObjectId id, [FromBody] Player value) {
       var matchingPlayers = from p in _context.Players where p.Id == id select p;
       matchingPlayers.ToList().ForEach(p => { p.Name = value.Name; });
       await _context.SaveChangesAsync();
     }
 
     [HttpDelete("{id}")]
-    public async void Delete(Guid id) {
+    public async void Delete(ObjectId id) {
       var players = from p in _context.Players where p.Id == id select p;
       await players.ForEachAsync(p => _context.Players.Remove(p));
       await _context.SaveChangesAsync();
