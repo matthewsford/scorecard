@@ -21,9 +21,6 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
-import {NgxsModule} from '@ngxs/store';
-import {NgxsReduxDevtoolsPluginModule} from '@ngxs/devtools-plugin';
-import {NgxsLoggerPluginModule} from '@ngxs/logger-plugin';
 
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
@@ -63,8 +60,6 @@ import {AccountModule} from './account/account.module';
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        NgxsReduxDevtoolsPluginModule.forRoot(),
-        NgxsLoggerPluginModule.forRoot(),
         ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
         CoreModule,
         AppRoutingModule,

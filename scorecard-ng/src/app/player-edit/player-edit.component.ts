@@ -1,10 +1,7 @@
 import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {Form, FormBuilder, FormGroup} from '@angular/forms';
 import {PlayerService} from '../player.service';
-import {Select, Store} from '@ngxs/store';
 import {ActivatedRoute} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs/index';
 import {tap} from 'rxjs/operators';
 
 import {Player} from '../player';
@@ -19,7 +16,6 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
     private player: Player;
     formGroup: FormGroup;
 
-    @Select() app$;
     submit: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private fb: FormBuilder,
