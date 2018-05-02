@@ -1,0 +1,20 @@
+Weclome to Scorecard. Please register.
+
+<form [formGroup]="registrationForm" (ngSubmit)="register.emit(null)">
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Username" formControlName="username"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field class="example-full-width">
+        <input matInput type="password" placeholder="Password" formControlName="password"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field class="example-full-width">
+        <input matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword"/>
+    </mat-form-field>
+    <br/>
+    <button mat-button type="submit">Register</button>
+</form>
+
+<p>Form value: {{ registrationForm.value | json }}</p>
+<p>Form status: {{ registrationForm.status | json }}</p>

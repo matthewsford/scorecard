@@ -8,7 +8,6 @@ import {Observable} from 'rxjs/index';
 import {tap} from 'rxjs/operators';
 
 import {Player} from '../player';
-import {SetUsername} from '../shared/app.actions';
 import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
@@ -25,9 +24,7 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
 
     constructor(private fb: FormBuilder,
                 private playerService: PlayerService,
-                private route: ActivatedRoute,
-                private store: Store,
-                private http: HttpClient) {
+                private route: ActivatedRoute) {
     }
 
     ngOnInit() {
@@ -42,7 +39,7 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
 
         this.submit.pipe(
             tap(() => {
-                this.store.dispatch([new SetUsername(this.name)]);
+                // this.store.dispatch([new SetUsername(this.name)]);
             }))
             .subscribe();
     }

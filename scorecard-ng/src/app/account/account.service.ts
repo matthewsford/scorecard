@@ -21,7 +21,8 @@ export class AccountService {
                 map(salt => {
                     return this.http.post('/register', {username: username, password: password});
                 })
-            );
+            )
+            .subscribe();
     }
 
     login(username: string, password: string) {
@@ -30,6 +31,6 @@ export class AccountService {
     }
 
     getSalt(username: string): Observable<string> {
-        return this.http.get<string>(`${this.apiBase}/account/salt/${username}`);
+        return this.http.get<string>(`${this.apiBase}/accounts/salt/${username}`);
     }
 }

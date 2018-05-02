@@ -1,4 +1,4 @@
-<div class="spinner-container" *ngIf="loading">
+<div class="spinner-container" *ngIf="loading$ | async">
     <mat-spinner aria-label="waiting for the page to load"></mat-spinner>
 </div>
 <router-outlet></router-outlet>

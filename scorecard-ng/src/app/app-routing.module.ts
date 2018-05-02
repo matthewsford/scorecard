@@ -3,8 +3,6 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 
 import {PlayerEditComponent} from './player-edit';
 import {PageNotFoundComponent} from './page-not-found';
-import {RegistrationPageComponent} from './registration-page';
-import {LoginPageComponent} from './account/login-page';
 import {AppShellComponent} from './app-shell/app-shell.component';
 import {CanLoseDataGuard} from './can-lose-data.guard';
 import {DashboardComponent} from './dashboard';
@@ -14,8 +12,21 @@ import {PlayerService} from './player.service';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {IsAuthenticatedGuard} from './auth.guard';
+import {LoginPageComponent} from './account/login-page';
+import {ForgotPasswordComponent} from './account/forgot-password';
+import {RegistrationPageComponent} from './account/registration-page';
 
 const appRoutes: Routes = [
+    /*
+    {
+        path: 'account',
+        loadChildren: './account/account.module#AccountModule'
+    },
+    */
+    {
+        path: 'forgot-password',
+        component: ForgotPasswordComponent,
+    },
     {
         path: 'login',
         component: LoginPageComponent,

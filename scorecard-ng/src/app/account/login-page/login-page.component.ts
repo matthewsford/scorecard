@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {AccountService} from '../../account.service';
+import {AccountService} from '../account.service';
 
 @Component({
   selector: 'app-login-page',
@@ -8,7 +8,7 @@ import {AccountService} from '../../account.service';
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {
-    authenticationForm: FormGroup;
+    formGroup: FormGroup;
 
     constructor(private fb: FormBuilder,
                 private accountService: AccountService) {
@@ -19,7 +19,7 @@ export class LoginPageComponent implements OnInit {
     }
 
     createForm() {
-        this.authenticationForm = this.fb.group({
+        this.formGroup = this.fb.group({
             username: '',
             password: '',
             rememberMe: false,
@@ -33,26 +33,26 @@ export class LoginPageComponent implements OnInit {
     }
 
     get username(): string {
-        return this.authenticationForm.get('username').value;
+        return this.formGroup.get('username').value;
     }
 
     set username(value: string) {
-        this.authenticationForm.get('username').setValue(value);
+        this.formGroup.get('username').setValue(value);
     }
 
     get password(): string {
-        return this.authenticationForm.get('password').value;
+        return this.formGroup.get('password').value;
     }
 
     set password(value: string) {
-        this.authenticationForm.get('password').setValue(value);
+        this.formGroup.get('password').setValue(value);
     }
 
     get rememberMe(): boolean {
-        return this.authenticationForm.get('rememberMe').value;
+        return this.formGroup.get('rememberMe').value;
     }
 
     set rememberMe(value: boolean) {
-        this.authenticationForm.get('rememberMe').setValue(value);
+        this.formGroup.get('rememberMe').setValue(value);
     }
 }

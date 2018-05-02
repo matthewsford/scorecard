@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AccountService} from '../account.service';
 
@@ -25,6 +25,7 @@ import {AccountService} from '../account.service';
 })
 export class RegistrationPageComponent implements OnInit {
     registrationForm: FormGroup;
+    register: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private fb: FormBuilder,
                 private accountService: AccountService) {
@@ -40,12 +41,9 @@ export class RegistrationPageComponent implements OnInit {
             password: '',
             confirmPassword: '',
         });
-    }
-
-    onRegister() {
-        const players = this.accountService.register(this.username, this.password)
-            .subscribe((a) => {
-            });
+        this.register.subscribe(next => {
+            this.accountService.register(this.username, this.password);
+        });
     }
 
     get username(): string {

@@ -19,19 +19,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule, MatToolbarModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatTabsModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatProgressSpinnerModule,
-    MatSortModule,
-} from '@angular/material';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
 import {NgxsModule} from '@ngxs/store';
@@ -45,13 +32,9 @@ import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core';
 import {SharedModule} from './shared';
 import {environment} from '../environments/environment';
-import {LoginPageComponent} from './account/login-page';
-import {RegistrationPageComponent} from './registration-page';
-import {AccountService} from './account.service';
 import {AppNavComponent} from './app-nav/app-nav.component';
 import {AppShellComponent} from './app-shell/app-shell.component';
 import {CanLoseDataGuard} from './can-lose-data.guard';
-import {AppState, RouterState} from './shared';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
 import {GameEditComponent} from './game-edit/game-edit.component';
@@ -60,14 +43,13 @@ import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-tabl
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {AuthService} from './auth.service';
 import {IsAuthenticatedGuard} from './auth.guard';
+import {AccountModule} from './account/account.module';
 
 @NgModule({
     declarations: [
         AppComponent,
         PlayerEditComponent,
         PageNotFoundComponent,
-        LoginPageComponent,
-        RegistrationPageComponent,
         AppNavComponent,
         AppShellComponent,
         DashboardComponent,
@@ -81,33 +63,16 @@ import {IsAuthenticatedGuard} from './auth.guard';
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        NgxsModule.forRoot([
-            AppState,
-            RouterState,
-        ]),
         NgxsReduxDevtoolsPluginModule.forRoot(),
         NgxsLoggerPluginModule.forRoot(),
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTabsModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatListModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatSortModule,
-        ReactiveFormsModule,
         ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
         CoreModule,
         AppRoutingModule,
         SharedModule,
+        AccountModule,
         LayoutModule,
     ],
     providers: [
-        AccountService,
         AuthService,
         CanLoseDataGuard,
         IsAuthenticatedGuard,
