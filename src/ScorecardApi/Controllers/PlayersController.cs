@@ -1,61 +1,87 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using ScorecardApi.Models;
 using Serilog;
 
 namespace ScorecardApi.Controllers {
-  [Route("api/[controller]")]
-  public class PlayersController : Controller {
+  [Route("api/players")]
+  [SuppressMessage("ReSharper", "UnusedMember.Global")]
+  public class PlayersController : ControllerBase {
     private readonly ILogger _logger;
-    private readonly MyContext _context;
+    private readonly IMongoDatabase _database;
 
     public PlayersController(ILogger logger,
-      MyContext context) {
-      this._logger = logger;
-      _context = context;
+      IMongoDatabase database) {
+      _logger = logger;
+      _database = database;
     }
 
-    [HttpGet]
-    public IEnumerable<Player> Get() {
-      // return from p in _context.Players select p;
-      var players = new LinkedList<Player>();
-      for (var i=0; i < 200; i++)
-      {
-        players.AddLast(new Player($"Player {i}"));
-      }
-
-      return players;
+    [HttpGet("")]
+    public IActionResult Get() {
+      var collection = _database.GetCollection<Player>("players");
+      return Ok(Map(collection.AsQueryable().ToEnumerable()));
     }
 
     [HttpGet("{id}")]
-    public Player Get(ObjectId id)
-    {
-      return new Player("Jim bob Doe");
-      // return from p in _context.Players where p.Id == id select p;
+    public async Task<IActionResult> Get(string id) {
+      // var query = Query<Player>.EQ(u => u.Id, new ObjectId(id));
+      try {
+        var collection = _database.GetCollection<Player>("players");
+        var filter = Builders<Player>.Filter.Eq(p => p.Id, new ObjectId(id));
+        var cursor = await collection.FindAsync(filter);
+        await cursor.MoveNextAsync();
+        var player = cursor.Current.FirstOrDefault();
+        return Ok(Map(player));
+      }
+      catch (IndexOutOfRangeException ex) {
+        //TODO
+        return NotFound();
+      }
     }
 
-    [HttpPost]
-    public async void Post([FromBody] Player value) {
-      await _context.Players.AddAsync(value);
-      await _context.SaveChangesAsync();
+    [HttpPost("")]
+    public async Task<IActionResult> Post([FromBody] PlayerResource resuorce) {
+      var player = Map(resuorce);
+      var collection = _database.GetCollection<Player>("players");
+      await collection.InsertOneAsync(player);
+      return Ok(Map(player));
     }
 
-    [HttpPut("{id}")]
-    public async void Patch(ObjectId id, [FromBody] Player value) {
-      var matchingPlayers = from p in _context.Players where p.Id == id select p;
-      matchingPlayers.ToList().ForEach(p => { p.Name = value.Name; });
-      await _context.SaveChangesAsync();
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] PlayerResource resource) {
+      var filter = Builders<Player>.Filter.Eq(p => p.Id, new ObjectId(id));
+      var collection = _database.GetCollection<Player>("players");
+      var player = await collection.FindAsync(filter);
+
+      return StatusCode(501);
     }
+
 
     [HttpDelete("{id}")]
-    public async void Delete(ObjectId id) {
-      var players = from p in _context.Players where p.Id == id select p;
-      await players.ForEachAsync(p => _context.Players.Remove(p));
-      await _context.SaveChangesAsync();
+    public async Task<IActionResult> Delete(string id) {
+      var collection = _database.GetCollection<Player>("players");
+      var filter = Builders<Player>.Filter.Eq(p => p.Id, new ObjectId(id));
+      var player = await collection.FindOneAndDeleteAsync(filter);
+      return Ok(player);
+    }
+
+    public IEnumerable<PlayerResource> Map(IEnumerable<Player> players) {
+      return Mapper.Map<IEnumerable<Player>, IEnumerable<PlayerResource>>(players);
+    }
+
+    public PlayerResource Map(Player player) {
+      return Mapper.Map<Player, PlayerResource>(player);
+    }
+
+    public Player Map(PlayerResource player) {
+      return Mapper.Map<PlayerResource, Player>(player);
     }
   }
 }
