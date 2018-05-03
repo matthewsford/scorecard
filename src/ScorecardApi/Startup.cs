@@ -7,8 +7,19 @@ using ScorecardApi.Models;
 using Serilog;
 
 namespace ScorecardApi {
+  public class MongoOptions
+  {
+    public MongoOptions()
+    {
+
+    }
+
+    public string ConnectionString { get; set; }
+  }
+  
   public class Startup {
-    public Startup(IConfiguration configuration) {
+    public Startup(IConfiguration configuration,
+                   IHostingEnvironment env) {
       Configuration = configuration;
     }
 
