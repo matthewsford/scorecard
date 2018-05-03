@@ -1,18 +1,11 @@
 using System;
-using System.Linq;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.Razor.TagHelpers;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using ScorecardApi.Models;
 using Serilog;
@@ -50,11 +43,6 @@ namespace ScorecardApi {
                    IHostingEnvironment env) {
       Configuration = configuration;
 
-      Mapper.Initialize(cfg => {
-        cfg.AddProfile<MongoProfile>();
-        cfg.AddProfile<PlayerProfile>();
-        cfg.AddCollectionMappers();
-      });
     }
 
     public IConfiguration Configuration { get; }
@@ -63,6 +51,13 @@ namespace ScorecardApi {
     public void ConfigureServices(IServiceCollection services) {
       services.AddSingleton(Log.Logger);
       services.AddMongo(Configuration);
+
+      var mapperConfig = new MapperConfiguration(cfg => {
+        cfg.AddProfile<MongoProfile>();
+        cfg.AddProfile<PlayerProfile>();
+        cfg.AddCollectionMappers();
+      });
+      services.AddSingleton(mapperConfig.CreateMapper());
       services.AddMvc();
     }
 

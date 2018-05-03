@@ -4,33 +4,29 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace ScorecardApi.Models {
-  public class Entity { }
-
-  public class Player : Entity {
-    public Player() { }
-
-    public Player(string name) {
-      Name = name;
-    }
-
+  public class Entity {
     [BsonId]
     public ObjectId Id { get; set; }
+  }
 
+  public class Player : Entity {
     [BsonElement("name")]
     public string Name { get; set; }
   }
 
-  public class Resource<T> where T : Entity { }
+  [DataContract]
+  public class Resource<T> where T : Entity {
+    [DataMember]
+    public string Id { get; set; }
+  }
 
   [DataContract]
   public class PlayerResource : Resource<Player> {
     [DataMember]
-    public string Id { get; set; }
-
-    [DataMember]
     public string Name { get; set; }
   }
 
+  // ReSharper disable once UnusedMember.Global
   public class MongoProfile : Profile {
     // ReSharper disable once UnusedMember.Global
     public MongoProfile() {
@@ -39,6 +35,7 @@ namespace ScorecardApi.Models {
     }
   }
 
+  // ReSharper disable once UnusedMember.Global
   public class PlayerProfile : Profile {
     // ReSharper disable once UnusedMember.Global
     public PlayerProfile() {
