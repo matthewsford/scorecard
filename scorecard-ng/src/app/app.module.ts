@@ -17,10 +17,10 @@
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
+import {Injector, NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
+import { createCustomElement } from '@angular/elements';
 
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
@@ -31,15 +31,12 @@ import {SharedModule} from './shared';
 import {environment} from '../environments/environment';
 import {AppNavComponent} from './app-nav/app-nav.component';
 import {AppShellComponent} from './app-shell/app-shell.component';
-import {CanLoseDataGuard} from './can-lose-data.guard';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
 import {GameEditComponent} from './game-edit/game-edit.component';
 import {GamesTableComponent} from './games-table/games-table.component';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
-import {AuthService} from './auth.service';
-import {IsAuthenticatedGuard} from './auth.guard';
 import {AccountModule} from './account/account.module';
 
 @NgModule({
@@ -56,6 +53,9 @@ import {AccountModule} from './account/account.module';
         LeaderboardsTableComponent,
         LeaderboardComponent
     ],
+  entryComponents: [
+    PlayerEditComponent,
+  ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -67,13 +67,14 @@ import {AccountModule} from './account/account.module';
         AccountModule,
         LayoutModule,
     ],
-    providers: [
-        AuthService,
-        CanLoseDataGuard,
-        IsAuthenticatedGuard,
-    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {
-}
+  constructor(private injector: Injector) {}
 
+  // noinspection JSUnusedGlobalSymbols
+  ngDoBootstrap() {
+    const PlayerEditElement = createCustomElement(PlayerEditComponent, {injector: this.injector});
+    customElements.define('player-edit', PlayerEditElement);
+  }
+}

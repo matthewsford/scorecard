@@ -9,7 +9,9 @@ export interface CanLoseData {
     resourceDescription: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CanLoseDataGuard implements CanDeactivate<CanLoseData> {
     canDeactivate(component: CanLoseData,
                   currentRoute: ActivatedRouteSnapshot,

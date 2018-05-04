@@ -1,19 +1,20 @@
 import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {Form, FormBuilder, FormGroup} from '@angular/forms';
 import {PlayerService} from '../player.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Data} from '@angular/router';
 import {tap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 import {Player} from '../player';
 import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
-    selector: 'app-player-edit',
+    selector: 'player-edit',
     templateUrl: './player-edit.component.html',
     styleUrls: ['./player-edit.component.scss']
 })
 export class PlayerEditComponent implements OnInit, CanLoseData {
-    private player: Player;
+    private data$: Observable<Data>;
     formGroup: FormGroup;
 
     submit: EventEmitter<any> = new EventEmitter<any>();
@@ -24,14 +25,17 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
     }
 
     ngOnInit() {
-        this.player = this.route.snapshot.data['player'];
+        this.data$ = this.route.data;
         this.createForm();
     }
 
     createForm() {
+      this.data$.subscribe(data => {
+        const player = data['player'];
         this.formGroup = this.fb.group({
-            name: this.player.name,
+          name: player.name,
         });
+      });
 
         this.submit.pipe(
             tap(() => {

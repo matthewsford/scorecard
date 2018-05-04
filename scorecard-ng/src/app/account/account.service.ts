@@ -27,7 +27,7 @@ export class AccountService {
 
     login(username: string, password: string) {
 
-        return this.http.post('/api/login', {username: username, password: password});
+        return this.http.post('/api/accounts/login', {email: username, password: password});
     }
 
     getSalt(username: string): Observable<string> {

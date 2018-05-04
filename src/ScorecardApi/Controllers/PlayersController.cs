@@ -5,15 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using ScorecardApi.Models;
 using Serilog;
 
 namespace ScorecardApi.Controllers {
+  [Authorize]
   [Route("api/players")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]
-  public class PlayersController : ControllerBase {
+  public class PlayersController : Controller {
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
     private readonly IMongoDatabase _database;

@@ -62,7 +62,7 @@ namespace ScorecardApi.Controllers {
       return BadRequest();
     }
 
-    [HttpPost("register")]
+    [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignInRequest request) {
       if (ModelState.IsValid) {
@@ -104,6 +104,7 @@ namespace ScorecardApi.Controllers {
     }
   }
 
+  [DataContract]
   public class SignInRequest {
     [DataMember]
     public string Email { get; internal set; }

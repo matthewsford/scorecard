@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 
 import { PlayerTableDataSource } from './player-table-datasource';
 import {PlayerService} from '../player.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'player-table',
@@ -17,10 +18,17 @@ export class PlayerTableComponent implements OnInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['id', 'name'];
 
-  constructor(private playerService: PlayerService) {
+  constructor(private playerService: PlayerService,
+              private router: Router) {
   }
 
   ngOnInit() {
     this.dataSource = new PlayerTableDataSource(this.paginator, this.sort, this.playerService);
+    this.dataSource.unauthorized.subscribe(() => {
+      this.router.navigateByUrl('/login?return-url=/players')
+        .then(() => {
+          // TODO: How should I respond?
+        });
+    });
   }
 }

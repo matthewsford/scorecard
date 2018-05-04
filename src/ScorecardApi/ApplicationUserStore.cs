@@ -15,10 +15,12 @@ namespace ScorecardApi {
     IUserRoleStore<ApplicationUser>,
     IUserSecurityStampStore<ApplicationUser> {
     private readonly IMongoCollection<ApplicationUser> _users;
+    private IMongoCollection<IdentityRole<ObjectId>> _roles;
 
     // ReSharper disable once UnusedMember.Global
     public ApplicationUserStore(IMongoDatabase database) {
       _users = database.GetCollection<ApplicationUser>("users");
+      _roles = database.GetCollection<IdentityRole<ObjectId>>("roles");
     }
 
     public void Dispose() { }
@@ -171,14 +173,22 @@ namespace ScorecardApi {
       return Task.CompletedTask;
     }
 
-    public Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken) {
-      // TODO
-      return Task.FromResult((IList<string>)null);
+    public async Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken) {
+      var rolesList = new List<string>();
+      foreach (var roleId in user.Roles) {
+        var filter = Builders<IdentityRole<ObjectId>>.Filter.Eq(r => r.Id, roleId);
+        var roles = await _roles.FindAsync(filter, null, cancellationToken);
+        var role = await roles.FirstAsync(cancellationToken);
+        rolesList.Add(role.NormalizedName);
+      }
+      return rolesList;
     }
 
-    public Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken) {
-      // TODO
-      return Task.FromResult(false);
+    public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken) {
+      var filter = Builders<IdentityRole<ObjectId>>.Filter.Eq(r => r.NormalizedName, roleName);
+      var roles = await _roles.FindAsync(filter, new FindOptions<IdentityRole<ObjectId>>(), cancellationToken);
+      var role = await roles.FirstAsync(cancellationToken);
+      return user.Roles.Contains(role.Id);
     }
 
     public Task<IList<ApplicationUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken) {

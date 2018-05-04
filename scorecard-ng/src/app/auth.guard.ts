@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, CanDeactivate, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 
-import {PlayerEditComponent} from './player-edit';
 import {AuthService} from './auth.service';
 
 export interface CanLoseData {
@@ -10,7 +9,9 @@ export interface CanLoseData {
     resourceDescription: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class IsAuthenticatedGuard implements CanActivate {
     constructor(private authService: AuthService) {
     }

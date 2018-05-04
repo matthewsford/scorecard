@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using Microsoft.AspNetCore.Builder;
@@ -21,11 +24,6 @@ namespace ScorecardApi {
   }
 
   public static class MongoServiceCollectionExtensions {
-    /// <summary>
-    /// Adds MVC services to the specified <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
-    /// </summary>
-    /// <param name="services">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> to add services to.</param>
-    /// <returns>An <see cref="T:Microsoft.Extensions.DependencyInjection.IMvcBuilder" /> that can be used to further configure the MVC services.</returns>
     public static void AddMongo(this IServiceCollection services, IConfiguration configuration) {
       if (services == null)
         throw new ArgumentNullException(nameof(services));
@@ -59,7 +57,7 @@ namespace ScorecardApi {
       });
       services.AddSingleton(mapperConfig.CreateMapper());
 
-      services.AddIdentity<ApplicationUser, IdentityRole>()
+      services.AddIdentity<ApplicationUser, IdentityRole<ObjectId>>()
         .AddDefaultTokenProviders();
 
       services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
@@ -88,11 +86,21 @@ namespace ScorecardApi {
       services.ConfigureApplicationCookie(options => {
         options.Cookie.HttpOnly = true;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.LoginPath = "/login";
-        options.AccessDeniedPath = "/access-denied";
         options.SlidingExpiration = true;
       });
 
+      services.ConfigureApplicationCookie(options => {
+        options.Events.OnRedirectToLogin = context => {
+          context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+          context.Response.Headers.Add("WWW-Authenticate", "Custom");
+          return Task.CompletedTask;
+        };
+
+        options.Events.OnRedirectToAccessDenied = context => {
+          context.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+          return Task.CompletedTask;
+        };
+      });
 
       services.AddMvc();
     }
@@ -111,5 +119,7 @@ namespace ScorecardApi {
 
   public interface IEmailSender { }
 
-  public class ApplicationUser : IdentityUser<ObjectId> { }
+  public class ApplicationUser : IdentityUser<ObjectId> {
+    public IList<ObjectId> Roles { get; set; } = new List<ObjectId>();
+  }
 }
