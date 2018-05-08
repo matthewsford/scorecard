@@ -15,17 +15,16 @@
  */
 
 import {Component, EventEmitter, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {AccountService} from '../account.service';
 
 @Component({
-    selector: 'app-registration-page',
-    templateUrl: './registration-page.component.html',
-    styleUrls: ['./registration-page.component.scss']
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss']
 })
-export class RegistrationPageComponent implements OnInit {
+export class RegisterComponent implements OnInit {
     registrationForm: FormGroup;
-    register: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private fb: FormBuilder,
                 private accountService: AccountService) {
@@ -37,13 +36,18 @@ export class RegistrationPageComponent implements OnInit {
 
     createForm() {
         this.registrationForm = this.fb.group({
-            username: '',
-            password: '',
-            confirmPassword: '',
+            username: ['', [Validators.required, Validators.minLength(4)]],
+            password: [''. [Validators.required, Validators.minLength(4)]],
+            confirmPassword: ['', [Validators.required, mustMatch(this.passwordControl, 'confirm password must match password')]],
         });
-        this.register.subscribe(next => {
-            this.accountService.register(this.username, this.password);
-        });
+    }
+
+    onRegister(): void {
+        this.accountService.register(this.username, this.password);
+    }
+
+    get passwordControl(): AbstractControl {
+        return this.registrationForm.get('password');
     }
 
     get username(): string {
@@ -69,4 +73,10 @@ export class RegistrationPageComponent implements OnInit {
     set confirmPassword(value: string) {
         this.registrationForm.get('confirmPassword').setValue(value);
     }
+}
+
+export function mustMatch(targetControl: AbstractControl, error: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors => {
+        return control.value === targetControl.value ? {'error': {value: control.value}} : null;
+    };
 }

@@ -1,0 +1,37 @@
+<mat-card>
+    <mat-card-title>Sign In</mat-card-title>
+    <form [formGroup]="formGroup">
+        <mat-card-content>
+            Welcome to Scorecard. Please sign in.
+            <br/>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Username" formControlName="username"/>
+            </mat-form-field>
+            <br/>
+            <mat-form-field class="example-full-width">
+                <input
+                        matInput
+                        [type]="passwordInputType$ | async"
+                        placeholder="Password"
+                        formControlName="password"
+                        (keypress)="onKeyPress($event)"
+                />
+            </mat-form-field>
+            <mat-slide-toggle formControlName="showPassword">Show Password</mat-slide-toggle>
+            <br/>
+            <mat-checkbox>Remember Me</mat-checkbox>
+            <br/>
+            <p class="warning" *ngIf="capsLockOn$ | async">caps lock is on</p>
+            <br/>
+            <p class="error">{{errorMessage}}</p>
+            <button mat-button type="submit" [disabled]="signInDisabled$ | async">Sign In</button>
+        </mat-card-content>
+        <mat-card-footer>
+        </mat-card-footer>
+    </form>
+</mat-card>
+
+<div *ngIf="true">
+    <p>Form value: {{ formGroup.value | json }}</p>
+    <p>Form status: {{ formGroup.status | json }}</p>
+</div>

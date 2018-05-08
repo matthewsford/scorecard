@@ -38,6 +38,7 @@ import {GamesTableComponent} from './games-table/games-table.component';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {AccountModule} from './account/account.module';
+import { SignOutComponent } from './account/sign-out';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import {AccountModule} from './account/account.module';
         GameEditComponent,
         GamesTableComponent,
         LeaderboardsTableComponent,
-        LeaderboardComponent
+        LeaderboardComponent,
+        SignOutComponent
     ],
   entryComponents: [
     PlayerEditComponent,

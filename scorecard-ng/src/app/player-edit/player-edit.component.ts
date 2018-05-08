@@ -1,11 +1,11 @@
 import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
-import {Form, FormBuilder, FormGroup} from '@angular/forms';
-import {PlayerService} from '../player.service';
+import {Form, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Data} from '@angular/router';
-import {tap} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
+import {map, tap} from 'rxjs/operators';
 
 import {Player} from '../player';
+import {PlayerService} from '../player.service';
 import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
@@ -16,8 +16,7 @@ import {CanLoseData} from '../can-lose-data.guard';
 export class PlayerEditComponent implements OnInit, CanLoseData {
     private data$: Observable<Data>;
     formGroup: FormGroup;
-
-    submit: EventEmitter<any> = new EventEmitter<any>();
+    saveDisabled$: Observable<boolean>;
 
     constructor(private fb: FormBuilder,
                 private playerService: PlayerService,
@@ -30,18 +29,28 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
     }
 
     createForm() {
-      this.data$.subscribe(data => {
-        const player = data['player'];
-        this.formGroup = this.fb.group({
-          name: player.name,
+        this.data$.subscribe(data => {
+            const player = data['player'];
+            if (player instanceof Player) {
+                this.formGroup = this.fb.group({
+                    id: player.id,
+                    name: [player.name, Validators.required],
+                });
+                this.saveDisabled$ = this.formGroup.valueChanges.pipe(map(() => !this.formGroup.invalid || this.formGroup.pristine));
+            }
         });
-      });
 
-        this.submit.pipe(
-            tap(() => {
-                // this.store.dispatch([new SetUsername(this.name)]);
-            }))
-            .subscribe();
+    }
+
+    onSave() {
+        this.playerService.savePlayer({
+            id: this.id,
+            name: this.name,
+        });
+    }
+
+    get id(): string {
+        return this.formGroup.get('id').value;
     }
 
     get name(): string {

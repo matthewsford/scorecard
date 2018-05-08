@@ -32,8 +32,13 @@
     "core-js": "^2.4.1",
     "document-register-element": "^1.7.2",
     "hammerjs": "^2.0.8",
+    "moment": "^2.18.1",
+    "ng-lightning": "^2.0.1",
+    "ng-zorro-antd": "^0.6.15",
     "rxjs": "6.1.0",
     "rxjs-compat": "^6.0.0",
+    "scrypt-async-modern": "^3.0.6",
+    "ts-trueskill": "^2.1.1",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

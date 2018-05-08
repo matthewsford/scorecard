@@ -12,9 +12,10 @@ import {PlayerService} from './player.service';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {IsAuthenticatedGuard} from './auth.guard';
-import {LoginPageComponent} from './account/login-page';
+import {SignInComponent} from './account/sign-in';
+import {SignOutComponent} from './account/sign-out';
 import {ForgotPasswordComponent} from './account/forgot-password';
-import {RegistrationPageComponent} from './account/registration-page';
+import {RegisterComponent} from './account/register';
 
 const appRoutes: Routes = [
     /*
@@ -28,12 +29,16 @@ const appRoutes: Routes = [
         component: ForgotPasswordComponent,
     },
     {
-        path: 'login',
-        component: LoginPageComponent,
+        path: 'sign-in',
+        component: SignInComponent,
+    },
+    {
+        path: 'sign-out',
+        component: SignOutComponent,
     },
     {
         path: 'register',
-        component: RegistrationPageComponent,
+        component: RegisterComponent,
     },
     {
         path: '',

@@ -1,7 +1,9 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {
-    MatButtonModule, MatCheckboxModule,
+    MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -9,6 +11,7 @@ import {
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
@@ -20,6 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     imports: [
         CommonModule,
         MatButtonModule,
+        MatCardModule,
         MatCheckboxModule,
         MatFormFieldModule,
         MatIconModule,
@@ -28,6 +32,7 @@ import {ReactiveFormsModule} from '@angular/forms';
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
+        MatSlideToggleModule,
         MatSortModule,
         MatTableModule,
         MatTabsModule,
@@ -38,6 +43,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     exports: [
         CommonModule,
         MatButtonModule,
+        MatCardModule,
         MatCheckboxModule,
         MatFormFieldModule,
         MatIconModule,
@@ -46,6 +52,7 @@ import {ReactiveFormsModule} from '@angular/forms';
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
+        MatSlideToggleModule,
         MatSortModule,
         MatTableModule,
         MatTabsModule,

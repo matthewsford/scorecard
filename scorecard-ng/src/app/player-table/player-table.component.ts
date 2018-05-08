@@ -24,11 +24,11 @@ export class PlayerTableComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new PlayerTableDataSource(this.paginator, this.sort, this.playerService);
-    this.dataSource.unauthorized.subscribe(() => {
-      this.router.navigateByUrl('/login?return-url=/players')
+    /*this.dataSource.unauthorized.subscribe(() => {
+      this.router.navigateByUrl('/sign-in?return-url=/players')
         .then(() => {
           // TODO: How should I respond?
         });
-    });
+    });*/
   }
 }

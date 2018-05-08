@@ -11,6 +11,10 @@ export class PlayerService {
     constructor(private http: HttpClient) {
     }
 
+    public savePlayer(player: Player): Observable<Player> {
+        return player.id === 'new' ? this.createPlayer(player) : this.updatePlayer(player);
+    }
+
     public createPlayer(player: Player): Observable<Player> {
         return this.http.post<Player>('/api/players', player);
     }

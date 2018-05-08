@@ -8,14 +8,20 @@ import {PlayerService} from './player.service';
 
 @Injectable()
 export class PlayerResolver implements Resolve<Player> {
-  constructor(private http: HttpClient) {
-  }
+    constructor(private http: HttpClient) {
+    }
 
-  resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot):
-    Observable<Player> | Promise<Player> | Player {
-    const id = route.paramMap.get('id');
-    return this.http.get<Player>(`/api/players/${id}`);
-  }
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot):
+        Observable<Player> | Promise<Player> | Player {
+        const id = route.paramMap.get('id');
+        if (id === 'new') {
+            const player = new Player();
+            player.id = 'new';
+            return player;
+        } else {
+            return this.http.get<Player>(`/api/players/${id}`);
+        }
+    }
 }

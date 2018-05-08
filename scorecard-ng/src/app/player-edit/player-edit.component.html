@@ -1,9 +1,10 @@
-<form [formGroup]="formGroup" (ngSubmit)="submit.emit(null)">
+<form [formGroup]="formGroup" (ngSubmit)="onSave()">
+  <input type="hidden" formControlName="id"/>
   <mat-form-field class="example-full-width">
     <input matInput placeholder="Name" formControlName="name"/>
   </mat-form-field>
 
-  <button id="savePlayer" type="submit" mat-fab>
+  <button id="savePlayer" type="submit" [disabled]="saveDisabled$" mat-fab>
     <i class="material-icons">save</i>
   </button>
 </form>
