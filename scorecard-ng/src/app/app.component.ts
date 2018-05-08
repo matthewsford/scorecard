@@ -11,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-    private loading$: Observable<boolean>;
+    loading$: Observable<boolean>;
 
     constructor(
         private breakpointObserver: BreakpointObserver,

@@ -1,14 +1,12 @@
 import {DataSource} from '@angular/cdk/collections';
 import {MatPaginator, MatSort} from '@angular/material';
-import {map, merge, multicast, switchMap, tap} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {multicast, tap} from 'rxjs/operators';
+import {merge, of} from 'rxjs';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {Player} from '../player';
 import {PlayerService} from '../player.service';
-import {EventEmitter} from '@angular/core';
 
 export enum ServerStatus {
     Okay,

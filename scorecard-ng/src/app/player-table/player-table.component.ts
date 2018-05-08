@@ -6,7 +6,7 @@ import {PlayerService} from '../player.service';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'player-table',
+  selector: 'app-player-table',
   templateUrl: './player-table.component.html',
   styleUrls: ['./player-table.component.scss']
 })

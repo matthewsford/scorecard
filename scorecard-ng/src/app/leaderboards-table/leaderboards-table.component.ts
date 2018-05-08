@@ -3,7 +3,7 @@ import { MatPaginator, MatSort } from '@angular/material';
 import { LeaderboardsTableDataSource } from './leaderboards-table-datasource';
 
 @Component({
-  selector: 'leaderboards-table',
+  selector: 'app-leaderboards-table',
   templateUrl: './leaderboards-table.component.html',
   styleUrls: ['./leaderboards-table.component.css']
 })

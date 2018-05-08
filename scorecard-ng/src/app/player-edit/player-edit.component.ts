@@ -9,63 +9,59 @@ import {PlayerService} from '../player.service';
 import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
-    selector: 'player-edit',
-    templateUrl: './player-edit.component.html',
-    styleUrls: ['./player-edit.component.scss']
+  selector: 'app-player-edit',
+  templateUrl: './player-edit.component.html',
+  styleUrls: ['./player-edit.component.scss']
 })
 export class PlayerEditComponent implements OnInit, CanLoseData {
-    private data$: Observable<Data>;
-    formGroup: FormGroup;
-    saveDisabled$: Observable<boolean>;
+  private data$: Observable<Data>;
+  formGroup: FormGroup;
+  saveDisabled$: Observable<boolean>;
 
-    constructor(private fb: FormBuilder,
-                private playerService: PlayerService,
-                private route: ActivatedRoute) {
-    }
+  constructor(private fb: FormBuilder,
+              private playerService: PlayerService,
+              private route: ActivatedRoute) {
+  }
 
-    ngOnInit() {
-        this.data$ = this.route.data;
-        this.createForm();
-    }
+  ngOnInit() {
+    this.data$ = this.route.data;
+    this.createForm();
+  }
 
-    createForm() {
-        this.data$.subscribe(data => {
-            const player = data['player'];
-            if (player instanceof Player) {
-                this.formGroup = this.fb.group({
-                    id: player.id,
-                    name: [player.name, Validators.required],
-                });
-                this.saveDisabled$ = this.formGroup.valueChanges.pipe(map(() => !this.formGroup.invalid || this.formGroup.pristine));
-            }
+  createForm() {
+    this.data$.subscribe(data => {
+      const player = data['player'];
+      if (player instanceof Player) {
+        this.formGroup = this.fb.group({
+          id: player.id,
+          name: [player.name, Validators.required],
         });
+        this.saveDisabled$ = this.formGroup.valueChanges.pipe(map(() => !this.formGroup.invalid || this.formGroup.pristine));
+      }
+    });
 
-    }
+  }
 
-    onSave() {
-        this.playerService.savePlayer({
-            id: this.id,
-            name: this.name,
-        });
-    }
+  onSave() {
+    this.playerService.savePlayer({
+      id: this.id,
+      name: this.name,
+    });
+  }
 
-    get id(): string {
-        return this.formGroup.get('id').value;
-    }
+  get id(): string {
+    return this.formGroup.get('id').value;
+  }
 
-    get name(): string {
-        return this.formGroup.get('name').value;
-    }
+  get resourceDescription(): string {
+    return this.name || '(new player)';
+  }
 
-    set name(value: string) {
-        this.formGroup.get('name').setValue(value);
-    }
+  get name(): string {
+    return this.formGroup.get('name').value;
+  }
 
-    get isDirty(): boolean {
-        return this.formGroup.dirty;
-    }
-
-    get resourceDescription(): string {
-        return this.name || '(new player)';
-    }
+  get isDirty(): boolean {
+    return this.formGroup.dirty;
+  }
 }

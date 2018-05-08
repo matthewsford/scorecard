@@ -32,20 +32,19 @@ using MongoDB.Bson;
 using ScorecardApi.Models;
 using Serilog;
 
-namespace ScorecardApi.Controllers
-{
+namespace ScorecardApi.Controllers {
   [DataContract]
-  public class SaltResponse
-  {
-    [DataMember(Name = "salt")] public string Salt { get; set; }
+  public class SaltResponse {
+    [DataMember(Name = "salt")]
+    public string Salt { get; set; }
 
-    [DataMember(Name = "username")] public string Username { get; set; }
+    [DataMember(Name = "username")]
+    public string Username { get; set; }
   }
 
   [Route("api/accounts")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]
-  public class AccountsController : ControllerBase
-  {
+  public class AccountsController : ControllerBase {
     private readonly ILogger _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -55,8 +54,7 @@ namespace ScorecardApi.Controllers
     public AccountsController(ILogger logger,
       UserManager<ApplicationUser> userManager,
       SignInManager<ApplicationUser> signInManager,
-      ApplicationUserStore userStore)
-    {
+      ApplicationUserStore userStore) {
       _logger = logger;
       _userManager = userManager;
       _signInManager = signInManager;
@@ -65,16 +63,14 @@ namespace ScorecardApi.Controllers
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
-    {
+    public async Task<IActionResult> Register([FromBody] RegistrationRequest request) {
       var user = new ApplicationUser {
         UserName = request.Email,
         Email = request.Email,
         Key = request.Key
       };
       var result = await _userManager.CreateAsync(user);
-      if (result.Succeeded)
-      {
+      if (result.Succeeded) {
         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
         // Send an email with this link
         //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -92,20 +88,13 @@ namespace ScorecardApi.Controllers
 
     [HttpPost("sign-in")]
     [AllowAnonymous]
-    public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
-    {
-      if (ModelState.IsValid)
-      {
-        var user = _userManager.FindByEmailAsync(request.Email);
-        if (user.Key != null && user.Key == request.Key)
-        {
-          var result =
-            await _signInManager.SignInAsync(request.Email, request.RememberMe, "scrypt");
-          if (result.Succeeded)
-          {
-            // _logger.LogInformation(1, "User logged in.");
-            return Ok();
-          }
+    public async Task<IActionResult> SignIn([FromBody] SignInRequest request) {
+      if (ModelState.IsValid) {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user.Key != null && user.Key == request.Key) {
+          await _signInManager.SignInAsync(user, request.RememberMe, "scrypt");
+          // _logger.LogInformation(1, "User logged in.");
+          return Ok();
         }
 
         /*
@@ -128,10 +117,8 @@ namespace ScorecardApi.Controllers
     }
 
     [HttpPost("sign-out")]
-    public async Task<IActionResult> SignOut()
-    {
-      if (ModelState.IsValid)
-      {
+    public async Task<IActionResult> SignOut() {
+      if (ModelState.IsValid) {
         await _signInManager.SignOutAsync();
         return Ok();
       }
@@ -140,14 +127,12 @@ namespace ScorecardApi.Controllers
     }
 
     [HttpGet("{username}/hash-parameters")]
-    public ScryptParameters GetHashParameters(string username)
-    {
+    public ScryptParameters GetHashParameters(string username) {
       var randomBytes = new byte[32];
       _randomNumberGenerator.GetBytes(randomBytes);
       var salt = Convert.ToBase64String(randomBytes);
 
-      return new ScryptParameters
-      {
+      return new ScryptParameters {
         Username = username,
         Cost = 14,
         BlockSize = 16,

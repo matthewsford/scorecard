@@ -1,4 +1,12 @@
 {
+  "extends": [
+    "rxjs-tslint-rules",
+    "tslint-angular",
+    "tslint-clean-code",
+    "tslint-consistent-codestyle",
+    "tslint-eslint-rules",
+    "tslint-immutable"
+  ],
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
@@ -43,6 +51,7 @@
         ]
       }
     ],
+    "newspaper-order": true,
     "no-arg": true,
     "no-bitwise": true,
     "no-console": [

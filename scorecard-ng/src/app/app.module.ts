@@ -20,7 +20,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {Injector, NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
-import { createCustomElement } from '@angular/elements';
+import {createCustomElement} from '@angular/elements';
 
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
@@ -38,41 +38,46 @@ import {GamesTableComponent} from './games-table/games-table.component';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {AccountModule} from './account/account.module';
-import { SignOutComponent } from './account/sign-out';
+import {SignOutComponent} from './account/sign-out';
+import {ClarityModule} from '@clr/angular';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        PlayerEditComponent,
-        PageNotFoundComponent,
-        AppNavComponent,
-        AppShellComponent,
-        DashboardComponent,
-        PlayerTableComponent,
-        GameEditComponent,
-        GamesTableComponent,
-        LeaderboardsTableComponent,
-        LeaderboardComponent,
-        SignOutComponent
-    ],
+  declarations: [
+    AppComponent,
+    PlayerEditComponent,
+    PageNotFoundComponent,
+    AppNavComponent,
+    AppShellComponent,
+    DashboardComponent,
+    PlayerTableComponent,
+    GameEditComponent,
+    GamesTableComponent,
+    LeaderboardsTableComponent,
+    LeaderboardComponent,
+    SignOutComponent
+  ],
   entryComponents: [
     PlayerEditComponent,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
-        CoreModule,
-        AppRoutingModule,
-        SharedModule,
-        AccountModule,
-        LayoutModule,
-    ],
-    bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    ClarityModule,
+
+    HttpClientModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+    CoreModule,
+    AppRoutingModule,
+    SharedModule,
+    AccountModule,
+    LayoutModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private injector: Injector) {}
+  constructor(private injector: Injector) {
+  }
 
   // noinspection JSUnusedGlobalSymbols
   ngDoBootstrap() {

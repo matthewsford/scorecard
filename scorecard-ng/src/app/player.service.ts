@@ -8,30 +8,30 @@ import {Player} from './player';
 
 @Injectable()
 export class PlayerService {
-    constructor(private http: HttpClient) {
-    }
+  constructor(private http: HttpClient) {
+  }
 
-    public savePlayer(player: Player): Observable<Player> {
-        return player.id === 'new' ? this.createPlayer(player) : this.updatePlayer(player);
-    }
+  public savePlayer(player: Player): Observable<Player> {
+    return player.id === 'new' ? this.createPlayer(player) : this.updatePlayer(player);
+  }
 
-    public createPlayer(player: Player): Observable<Player> {
-        return this.http.post<Player>('/api/players', player);
-    }
+  public createPlayer(player: Player): Observable<Player> {
+    return this.http.post<Player>('/api/players', player);
+  }
 
-    public getPlayers(): Observable<Player[]> {
-        return this.http.get<Player[]>('/api/players');
-    }
+  public updatePlayer(player: Player): Observable<Player> {
+    return this.http.patch<Player>(`/api/players/${player.id}`, player);
+  }
 
-    public getPlayer(id: string): Observable<Player> {
-        return this.http.get<Player>(`/api/players/${id}`);
-    }
+  public getPlayers(): Observable<Player[]> {
+    return this.http.get<Player[]>('/api/players');
+  }
 
-    public updatePlayer(player: Player): Observable<Player> {
-        return this.http.patch<Player>(`/api/players/${player.id}`, player);
-    }
+  public getPlayer(id: string): Observable<Player> {
+    return this.http.get<Player>(`/api/players/${id}`);
+  }
 
-    public deletePlayer(id: string): Observable<Player> {
-        return this.http.delete<Player>(`/api/players/${id}`);
-    }
+  public deletePlayer(id: string): Observable<Player> {
+    return this.http.delete<Player>(`/api/players/${id}`);
+  }
 }

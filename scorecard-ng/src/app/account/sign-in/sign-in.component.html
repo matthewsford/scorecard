@@ -23,7 +23,7 @@
             <br/>
             <p class="warning" *ngIf="capsLockOn$ | async">caps lock is on</p>
             <br/>
-            <p class="error">{{errorMessage}}</p>
+            <p class="error">{{ errorMessage }}</p>
             <button mat-button type="submit" [disabled]="signInDisabled$ | async">Sign In</button>
         </mat-card-content>
         <mat-card-footer>

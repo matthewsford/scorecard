@@ -14,69 +14,100 @@
  *   limitations under the License.
  */
 
-import {Component, EventEmitter, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormGroupDirective,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import {DISABLED, INVALID, PENDING, VALID} from '@angular/forms/esm2015/src/model';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
+
 import {AccountService} from '../account.service';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent implements OnInit {
-    registrationForm: FormGroup;
+export class RegisterComponent implements OnInit, AfterViewInit {
+  formGroup: FormGroup;
+  capsLockOn$: Subject<boolean> = new BehaviorSubject<boolean>(false);
+  passwordInputType$: Subject<string> = new BehaviorSubject<string>('password');
+  submitDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
 
-    constructor(private fb: FormBuilder,
-                private accountService: AccountService) {
-        this.createForm();
-    }
+  constructor(private fb: FormBuilder,
+              private accountService: AccountService) {
+    this.createForm();
+  }
 
-    ngOnInit() {
-    }
+  ngAfterViewInit(): void {
+    this.showPasswordControl.valueChanges
+      .subscribe(checked => this.passwordInputType$.next(checked ? 'text' : 'password'));
 
-    createForm() {
-        this.registrationForm = this.fb.group({
-            username: ['', [Validators.required, Validators.minLength(4)]],
-            password: [''. [Validators.required, Validators.minLength(4)]],
-            confirmPassword: ['', [Validators.required, mustMatch(this.passwordControl, 'confirm password must match password')]],
-        });
-    }
+    this.fgd.ngSubmit.subscribe(() => {
+      this.accountService.register(this.username, this.password);
+    });
+  }
 
-    onRegister(): void {
-        this.accountService.register(this.username, this.password);
-    }
+  get showPasswordControl(): AbstractControl {
+    return this.formGroup.get('showPassword');
+  }
 
-    get passwordControl(): AbstractControl {
-        return this.registrationForm.get('password');
-    }
+  get password(): string {
+    return this.formGroup.get('password').value;
+  }
 
-    get username(): string {
-        return this.registrationForm.get('username').value;
-    }
+  get username(): string {
+    return this.formGroup.get('username').value;
+  }
 
-    set username(value: string) {
-        this.registrationForm.get('username').setValue(value);
-    }
+  ngOnInit() {
+  }
 
-    get password(): string {
-        return this.registrationForm.get('password').value;
-    }
+  createForm() {
+    console.log('creating form');
+    this.formGroup = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(4)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      confirmPassword: ['', Validators.required], // mustMatch(this.passwordControl, 'confirm password must match password')]],
+      showPassword: [false],
+    });
+    /*
+    this.formGroup.statusChanges
+      .pipe(map(status => status === PENDING || status === INVALID))
+      .subscribe(this.submitDisabled$);
+      */
+  }
 
-    set password(value: string) {
-        this.registrationForm.get('password').setValue(value);
-    }
+  get passwordControl(): AbstractControl {
+    return this.formGroup.get('password');
+  }
 
-    get confirmPassword(): string {
-        return this.registrationForm.get('confirmPassword').value;
-    }
+  get confirmPassword(): string {
+    return this.formGroup.get('confirmPassword').value;
+  }
 
-    set confirmPassword(value: string) {
-        this.registrationForm.get('confirmPassword').setValue(value);
-    }
+  set confirmPassword(value: string) {
+    this.formGroup.get('confirmPassword').setValue(value);
+  }
 }
 
 export function mustMatch(targetControl: AbstractControl, error: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors => {
-        return control.value === targetControl.value ? {'error': {value: control.value}} : null;
-    };
+  return (control: AbstractControl): ValidationErrors => {
+    return control.value === targetControl.value ? {'error': {value: control.value}} : null;
+  };
 }

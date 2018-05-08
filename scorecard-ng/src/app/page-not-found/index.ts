@@ -1,3 +1,3 @@
-import {PageNotFoundComponent} from "./page-not-found.component";
+import {PageNotFoundComponent} from './page-not-found.component';
 
 export {PageNotFoundComponent};

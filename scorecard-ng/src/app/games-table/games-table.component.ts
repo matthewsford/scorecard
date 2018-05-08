@@ -3,7 +3,7 @@ import { MatPaginator, MatSort } from '@angular/material';
 import { GamesTableDataSource } from './games-table-datasource';
 
 @Component({
-  selector: 'games-table',
+  selector: 'app-games-table',
   templateUrl: './games-table.component.html',
   styleUrls: ['./games-table.component.css']
 })

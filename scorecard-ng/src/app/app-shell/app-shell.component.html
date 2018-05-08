@@ -1,3 +1,33 @@
+<clr-main-container>
+  <clr-header>
+    <div class="branding">
+      <a href="#" class="nav-link">
+        <span class="clr-icon clr-clarity-logo"></span>
+        <span class="title">Scorecard</span>
+      </a>
+    </div>
+    <div class="header-nav" [clr-nav-level]="1">
+      <a class="nav-link" href="#" [routerLink]="['/dashboard']" routerLinkActive="active"><span class="nav-text">Dashboard</span></a>
+      <a class="nav-link" href="#" [routerLink]="['/players']" routerLinkActive="active">
+        <span class="nav-text">Players</span></a>
+    </div>
+    <div class="header-actions">
+      <a class="nav-link" href="#" [routerLink]="['/sign-out']" routerLinkActive="active">
+        <span class="nav-text">
+<clr-icon shape="logout">
+</clr-icon>
+      </span>
+      </a>
+    </div>
+  </clr-header>
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</clr-main-container>
+
+<!--
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav
             #drawer
@@ -29,3 +59,4 @@
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>
+-->

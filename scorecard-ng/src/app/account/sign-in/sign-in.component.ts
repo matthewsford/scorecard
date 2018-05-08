@@ -14,10 +14,9 @@
  *   limitations under the License.
  */
 
-import {AfterViewInit, Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
-import {Form, FormBuilder, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {ActivatedRoute, Route, Router} from '@angular/router';
-import {MatSlideToggle, MatSlideToggleChange} from '@angular/material';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {map} from 'rxjs/operators';
@@ -27,104 +26,95 @@ import {DISABLED, INVALID, PENDING, VALID} from '@angular/forms/esm2015/src/mode
 import {AccountService, SignInResult} from '../account.service';
 
 @Component({
-    selector: 'app-sign-in',
-    templateUrl: './sign-in.component.html',
-    styleUrls: ['./sign-in.component.scss']
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent implements OnInit, AfterViewInit {
-    formGroup: FormGroup;
-    errorMessage = '';
-    capsLockOn$: Subject<boolean> = new BehaviorSubject<boolean>(false);
-    passwordInputType$: Subject<string> = new BehaviorSubject<string>('password');
-    signInDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
-    @ViewChild(MatSlideToggle) showPasswordControl: MatSlideToggle;
-    @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
+  formGroup: FormGroup;
+  errorMessage = '';
+  capsLockOn$: Subject<boolean> = new BehaviorSubject<boolean>(false);
+  passwordInputType$: Subject<string> = new BehaviorSubject<string>('password');
+  signInDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
 
-    constructor(private fb: FormBuilder,
-                private accountService: AccountService,
-                private router: Router,
-                private route: ActivatedRoute) {
-        this.createForm();
-    }
+  constructor(private fb: FormBuilder,
+              private accountService: AccountService,
+              private router: Router,
+              private route: ActivatedRoute) {
+    this.createForm();
+  }
 
-    ngOnInit() {
-    }
+  ngAfterViewInit(): void {
+    this.showPasswordControl.valueChanges
+      .subscribe(checked => this.passwordInputType$.next(checked ? 'text' : 'password'));
 
-    createForm() {
-        this.formGroup = this.fb.group({
-            username: ['', [Validators.required, Validators.minLength(4)]],
-            password: ['', [Validators.required, Validators.minLength(4)]],
-            showPassword: [false],
-            rememberMe: [false],
+    this.fgd.ngSubmit.subscribe(() => {
+      this.accountService.signIn(this.username, this.password, this.rememberMe)
+        .subscribe((result: SignInResult) => {
+          switch (result) {
+            case SignInResult.Succeeded:
+              this.navigateToReturnUrl();
+              break;
+            case SignInResult.InvalidCredentials:
+              this.errorMessage = 'Username and/or password are invalid. Please try again.';
+              break;
+            case SignInResult.ServiceUnavailable:
+              this.errorMessage = 'Service is unavailable. Please try again later.';
+              break;
+            case SignInResult.UnexpectedError:
+              this.errorMessage = 'Something unexpected happened.';
+              break;
+            default:
+              this.errorMessage = 'Something unexpected happened.';
+          }
         });
-        this.formGroup.statusChanges
-            .pipe(map(status => status === PENDING || status === INVALID))
-            .subscribe(this.signInDisabled$);
-    }
+    });
+  }
 
-    onKeyPress(event: KeyboardEvent): void {
-        this.capsLockOn$.next(event.getModifierState('CapsLock'));
-    }
-
-    navigateToReturnUrl() {
-        this.route.queryParamMap.subscribe(queryParamMap => {
-            const returnUrl = queryParamMap.has('return-url') ? queryParamMap.get('return-url') : '/';
-            this.router.navigateByUrl(returnUrl)
-                .then(() => {
-                    // TODO: What should I do?
-                });
+  navigateToReturnUrl() {
+    this.route.queryParamMap.subscribe(queryParamMap => {
+      const returnUrl = queryParamMap.has('return-url') ? queryParamMap.get('return-url') : '/';
+      this.router.navigateByUrl(returnUrl)
+        .then(() => {
+          // TODO: What should I do?
         });
-    }
+    });
+  }
 
-    get username(): string {
-        return this.formGroup.get('username').value;
-    }
+  get showPasswordControl(): AbstractControl {
+    return this.formGroup.get('showPassword');
+  }
 
-    set username(value: string) {
-        this.formGroup.get('username').setValue(value);
-    }
+  get username(): string {
+    return this.formGroup.get('username').value;
+  }
 
-    get password(): string {
-        return this.formGroup.get('password').value;
-    }
+  get password(): string {
+    return this.formGroup.get('password').value;
+  }
 
-    set password(value: string) {
-        this.formGroup.get('password').setValue(value);
-    }
+  get rememberMe(): boolean {
+    return this.formGroup.get('rememberMe').value;
+  }
 
-    get rememberMe(): boolean {
-        return this.formGroup.get('rememberMe').value;
-    }
+  ngOnInit() {
+  }
 
-    set rememberMe(value: boolean) {
-        this.formGroup.get('rememberMe').setValue(value);
-    }
+  createForm() {
+    this.formGroup = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(4)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      showPassword: [false],
+      rememberMe: [false],
+    });
+    this.formGroup.statusChanges
+      .pipe(map(status => status === PENDING || status === INVALID))
+      .subscribe(this.signInDisabled$);
+  }
 
-    ngAfterViewInit(): void {
-        this.showPasswordControl.change.subscribe((change: MatSlideToggleChange) => {
-            this.passwordInputType$.next(change.checked ? 'text' : 'password');
-        });
-
-        this.fgd.ngSubmit.subscribe(() => {
-            this.accountService.signIn(this.username, this.password, this.rememberMe)
-                .subscribe((result: SignInResult) => {
-                    switch (result) {
-                        case SignInResult.Succeeded:
-                            this.navigateToReturnUrl();
-                            break;
-                        case SignInResult.InvalidCredentials:
-                            this.errorMessage = 'Username and/or password are invalid. Please try again.';
-                            break;
-                        case SignInResult.ServiceUnavailable:
-                            this.errorMessage = 'Service is unavailable. Please try again later.';
-                            break;
-                        case SignInResult.UnexpectedError:
-                            this.errorMessage = 'Something unexpected happened.';
-                            break;
-                        default:
-                            this.errorMessage = 'Something unexpected happened.';
-                    }
-                });
-        });
-    }
+  onKeyPress(event: KeyboardEvent): void {
+    this.capsLockOn$.next(event.getModifierState('CapsLock'));
+  }
 }

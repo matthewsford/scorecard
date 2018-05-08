@@ -68,12 +68,6 @@ export class LeaderboardDataSource extends DataSource<LeaderboardItem> {
   }
 
   /**
-   *  Called when the table is being destroyed. Use this function, to clean up
-   * any open connections or free any held resources that were set up during connect.
-   */
-  disconnect() {}
-
-  /**
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
@@ -100,6 +94,12 @@ export class LeaderboardDataSource extends DataSource<LeaderboardItem> {
       }
     });
   }
+
+  /**
+   *  Called when the table is being destroyed. Use this function, to clean up
+   * any open connections or free any held resources that were set up during connect.
+   */
+  disconnect() {}
 }
 
 /** Simple sort comparator for example ID/Name columns (for client-side sorting). */
