@@ -16,15 +16,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
+using IdentityServer4.MongoDB.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,27 +54,21 @@ namespace ScorecardApi {
 
 
   public class Startup {
+    private readonly IHostingEnvironment _env;
+    private readonly IConfiguration _configuration;
+
+    // ReSharper disable once UnusedMember.Global
     public Startup(IConfiguration configuration,
       IHostingEnvironment env) {
-      Configuration = configuration;
+      _env = env;
+      _configuration = configuration;
     }
-
-    public IConfiguration Configuration { get; }
 
     // ReSharper disable once UnusedMember.Global
     public void ConfigureServices(IServiceCollection services) {
       services.AddSingleton(Log.Logger);
-      services.AddMongo(Configuration);
+      services.AddMongo(_configuration);
 
-      var mapperConfig = new MapperConfiguration(cfg => {
-        cfg.AddProfile<MongoProfile>();
-        cfg.AddProfile<PlayerProfile>();
-        cfg.AddCollectionMappers();
-      });
-      services.AddSingleton(mapperConfig.CreateMapper());
-
-      services.AddIdentity<ApplicationUser, IdentityRole<ObjectId>>()
-        .AddDefaultTokenProviders();
 
       services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
       services.AddTransient<IUserEmailStore<ApplicationUser>, ApplicationUserStore>();
@@ -85,26 +79,18 @@ namespace ScorecardApi {
       services.AddTransient<IRoleStore<IdentityRole<ObjectId>>, ApplicationRoleStore>();
       services.AddTransient<IRoleStore<IdentityRole>, ApplicationRoleStore>();
 
-      services.Configure<IdentityOptions>(options => {
-        options.Password.RequireDigit = true;
-        options.Password.RequiredLength = 8;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = false;
-        options.Password.RequiredUniqueChars = 6;
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-        options.Lockout.MaxFailedAccessAttempts = 10;
-        options.Lockout.AllowedForNewUsers = true;
-        options.User.RequireUniqueEmail = true;
+      var mapperConfig = new MapperConfiguration(cfg => {
+        cfg.AddProfile<MongoProfile>();
+        cfg.AddProfile<PlayerProfile>();
+        cfg.AddCollectionMappers();
       });
-      services.AddTransient<IEmailSender, EmailSender>();
+      services.AddSingleton(mapperConfig.CreateMapper());
 
-      services.ConfigureApplicationCookie(options => {
-        options.Cookie.HttpOnly = true;
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.SlidingExpiration = true;
-      });
+      ConfigureIdPServices(services);
+      ConfigureMvcServices(services);
+      services.AddMvc();
 
+      /*
       services.ConfigureApplicationCookie(options => {
         options.Events.OnRedirectToLogin = context => {
           context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
@@ -117,8 +103,60 @@ namespace ScorecardApi {
           return Task.CompletedTask;
         };
       });
+      */
+    }
 
-      services.AddMvc();
+    private static void ConfigureMvcServices(IServiceCollection services) {
+      JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+      services.AddAuthentication(options => {
+          options.DefaultScheme = "Cookies";
+          options.DefaultChallengeScheme = "oidc";
+        })
+        .AddCookie("Cookies")
+        .AddOpenIdConnect("oidc", options => {
+          options.SignInScheme = "Cookies";
+
+          options.Authority = "http://localhost:4200";
+          options.RequireHttpsMetadata = false;
+
+          options.ClientId = "scorecard";
+          options.ClientSecret = "secret";
+          options.ResponseType = "code id_token";
+
+          options.SaveTokens = true;
+          options.GetClaimsFromUserInfoEndpoint = true;
+
+          options.Scope.Add("scorecard");
+        });
+    }
+
+    protected void ConfigureIdPServices(IServiceCollection services) {
+      services.AddIdentity<ApplicationUser, IdentityRole<ObjectId>>()
+        .AddDefaultTokenProviders();
+
+      var builder = services.AddIdentityServer(options => {
+          options.Events.RaiseErrorEvents = true;
+          options.Events.RaiseInformationEvents = true;
+          options.Events.RaiseFailureEvents = true;
+          options.Events.RaiseSuccessEvents = true;
+        })
+        .AddConfigurationStore(options => {
+          _configuration.GetSection("mongo").Bind(options);
+        })
+        .AddInMemoryIdentityResources(Config.GetIdentityResources())
+        .AddInMemoryApiResources(Config.GetApiResources())
+        .AddInMemoryClients(Config.GetClients())
+        .AddAspNetIdentity<ApplicationUser>();
+
+      if (_env.IsDevelopment()) {
+        builder.AddDeveloperSigningCredential();
+      }
+      else {
+        throw new Exception("need to configure key material");
+      }
+
+      services.AddAuthentication();
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
@@ -127,9 +165,12 @@ namespace ScorecardApi {
       }
 
       app.UseAuthentication();
+      app.UseIdentityServer();
       app.UseMvc();
     }
   }
+
+  public class ApplicationDbContext : DbContext { }
 
   public interface IEmailSender { }
 
