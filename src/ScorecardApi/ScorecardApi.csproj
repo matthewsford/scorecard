@@ -19,4 +19,7 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MatthewFordUs.Srp\MatthewFordUs.Srp.csproj" />
+  </ItemGroup>
 </Project>

@@ -6,10 +6,12 @@ import {SharedModule} from '../shared';
 import {AccountRoutingModule} from './account-routing.module';
 import {RegisterComponent} from './register';
 import {AccountService} from './account.service';
+import {ClarityModule} from '@clr/angular';
 
 @NgModule({
     imports: [
         CommonModule,
+        ClarityModule,
         SharedModule,
         AccountRoutingModule
     ],
