@@ -28,7 +28,7 @@ using ScorecardApi.Models;
 using Serilog;
 
 namespace ScorecardApi.Controllers {
-  // [Authorize]
+  [Authorize]
   [Route("api/players")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]
   public class PlayersController : Controller {
