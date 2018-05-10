@@ -1,9 +1,10 @@
 import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
-
-import { PlayerTableDataSource } from './player-table-datasource';
-import {PlayerService} from '../player.service';
+import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Router} from '@angular/router';
+
+import {PlayerService} from '../player.service';
+import {Player} from '../player';
 
 @Component({
   selector: 'app-player-table',
@@ -11,10 +12,10 @@ import {Router} from '@angular/router';
   styleUrls: ['./player-table.component.scss']
 })
 export class PlayerTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  dataSource: PlayerTableDataSource;
-
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild(MatSort) sort: MatSort;
+  // dataSource: PlayerTableDataSource;
+players: BehaviorSubject<Player[]> = new BehaviorSubject<Player[]>([]);
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['id', 'name'];
 
@@ -23,7 +24,9 @@ export class PlayerTableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource = new PlayerTableDataSource(this.paginator, this.sort, this.playerService);
+    this.playerService.getPlayers()
+        .subscribe(this.players);
+    // this.dataSource = new PlayerTableDataSource(this.paginator, this.sort, this.playerService);
     /*this.dataSource.unauthorized.subscribe(() => {
       this.router.navigateByUrl('/sign-in?return-url=/players')
         .then(() => {

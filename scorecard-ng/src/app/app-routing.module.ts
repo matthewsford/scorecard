@@ -14,8 +14,6 @@ import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {IsAuthenticatedGuard} from './auth.guard';
 import {SignInComponent} from './account/sign-in';
 import {SignOutComponent} from './account/sign-out';
-import {ForgotPasswordComponent} from './account/forgot-password';
-import {RegisterComponent} from './account/register';
 
 const appRoutes: Routes = [
     /*
@@ -25,20 +23,12 @@ const appRoutes: Routes = [
     },
     */
     {
-        path: 'forgot-password',
-        component: ForgotPasswordComponent,
-    },
-    {
         path: 'sign-in',
         component: SignInComponent,
     },
     {
         path: 'sign-out',
         component: SignOutComponent,
-    },
-    {
-        path: 'register',
-        component: RegisterComponent,
     },
     {
         path: '',

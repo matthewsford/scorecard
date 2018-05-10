@@ -19,6 +19,7 @@ export class PlayerResolver implements Resolve<Player> {
         if (id === 'new') {
             const player = new Player();
             player.id = 'new';
+            player.name = '';
             return player;
         } else {
             return this.http.get<Player>(`/api/players/${id}`);

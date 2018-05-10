@@ -36,11 +36,8 @@ import {Observable} from 'rxjs/Observable';
 export class SignInComponent implements OnInit, AfterViewInit {
     formGroup: FormGroup;
     errorMessage = '';
-    capsLockOn$: Subject<boolean> = new BehaviorSubject<boolean>(false);
-    passwordInputType$: Subject<string> = new BehaviorSubject<string>('password');
     signInDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
     @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
-    @ViewChild('password') passwordRef: ElementRef;
 
     constructor(private fb: FormBuilder,
                 private accountService: AccountService,
@@ -50,25 +47,8 @@ export class SignInComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.showPasswordControl.valueChanges
-            .subscribe(checked => this.passwordInputType$.next(checked ? 'text' : 'password'));
-
-        const passwordFocus$ = fromEvent(this.passwordRef.nativeElement, 'focus');
-        const passwordBlur$ = fromEvent(this.passwordRef.nativeElement, 'blur');
-        const passwordKeypress$ = fromEvent(this.passwordRef.nativeElement, 'keypress');
-
-        combineLatest<boolean, boolean>(
-            passwordKeypress$.pipe(map<KeyboardEvent, boolean>(event => event.getModifierState('CapsLock'))),
-            merge<boolean>(
-                passwordFocus$.pipe(map<any, boolean>(() => true)),
-                passwordBlur$.pipe(map<any, boolean>(() => false))
-            ))
-            .pipe(map<boolean[], boolean>((array: boolean[]) =>
-                array.reduce((acc: boolean, cur: boolean, index: number, arr: ReadonlyArray<boolean>) => acc && cur, true)
-            )).subscribe(this.capsLockOn$);
-
         this.fgd.ngSubmit.subscribe(() => {
-            this.accountService.signIn(this.username, this.password, this.rememberMe)
+            this.accountService.signIn(this.username, null, false)
                 .subscribe((result: SignInResult) => {
                     switch (result) {
                         case SignInResult.Succeeded:
@@ -100,24 +80,12 @@ export class SignInComponent implements OnInit, AfterViewInit {
         });
     }
 
-    get showPasswordControl(): AbstractControl {
-        return this.formGroup.get('showPassword');
-    }
-
     get username(): string {
         return this.formGroup.get('username').value;
     }
 
-    get password(): string {
-        return this.passwordControl.value;
-    }
-
-    get passwordControl(): FormControl {
-        return this.formGroup.get('password') as FormControl;
-    }
-
-    get rememberMe(): boolean {
-        return this.formGroup.get('rememberMe').value;
+    get usernameControl(): FormControl {
+        return this.formGroup.get('username') as FormControl;
     }
 
     ngOnInit() {
@@ -125,17 +93,10 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
     createForm() {
         this.formGroup = this.fb.group({
-            username: ['', [Validators.required, Validators.minLength(4)]],
-            password: ['', [Validators.required, Validators.minLength(4)]],
-            showPassword: [false],
-            rememberMe: [false],
+            username: ['', [Validators.required]],
         });
         this.formGroup.statusChanges
             .pipe(map(status => status === PENDING || status === INVALID))
             .subscribe(this.signInDisabled$);
-    }
-
-    onKeyPress(event: KeyboardEvent): void {
-        this.capsLockOn$.next(event.getModifierState('CapsLock'));
     }
 }

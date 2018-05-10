@@ -17,22 +17,12 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 
-import {ForgotPasswordComponent} from './forgot-password';
 import {SignInComponent} from './sign-in';
-import {RegisterComponent} from './register';
 
 const routes: Routes = [
     {
-        path: 'forgot-password',
-        component: ForgotPasswordComponent,
-    },
-    {
         path: 'sign-in',
         component: SignInComponent,
-    },
-    {
-        path: 'register',
-        component: RegisterComponent,
     },
 ];
 

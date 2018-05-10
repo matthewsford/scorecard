@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {Form, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Data} from '@angular/router';
+import {ActivatedRoute, Data, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {map, tap} from 'rxjs/operators';
 
@@ -20,7 +20,8 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
 
   constructor(private fb: FormBuilder,
               private playerService: PlayerService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -33,10 +34,10 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
       const player = data['player'];
       if (player instanceof Player) {
         this.formGroup = this.fb.group({
-          id: player.id,
+          id: [player.id],
           name: [player.name, Validators.required],
         });
-        this.saveDisabled$ = this.formGroup.valueChanges.pipe(map(() => !this.formGroup.invalid || this.formGroup.pristine));
+        this.saveDisabled$ = this.formGroup.valueChanges.pipe(map(() => this.formGroup.invalid || this.formGroup.pristine));
       }
     });
 
@@ -46,7 +47,14 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
     this.playerService.savePlayer({
       id: this.id,
       name: this.name,
-    });
+    })
+        .subscribe((value) => {
+            this.formGroup.markAsPristine();
+          this.router.navigateByUrl('/players')
+              .then(value => {
+                // TODO: What should I do?
+              });
+        });
   }
 
   get id(): string {

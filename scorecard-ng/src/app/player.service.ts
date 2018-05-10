@@ -16,7 +16,8 @@ export class PlayerService {
   }
 
   public createPlayer(player: Player): Observable<Player> {
-    return this.http.post<Player>('/api/players', player);
+    return this.http.post<Player>('/api/players',
+        {...player, id: null});
   }
 
   public updatePlayer(player: Player): Observable<Player> {

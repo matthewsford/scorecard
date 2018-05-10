@@ -10,7 +10,7 @@ export interface CanLoseData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CanLoseDataGuard implements CanDeactivate<CanLoseData> {
     canDeactivate(component: CanLoseData,
@@ -21,5 +21,6 @@ export class CanLoseDataGuard implements CanDeactivate<CanLoseData> {
         if (component.isDirty) {
             return confirm(`Lose all changes to ${component.resourceDescription}`);
         }
+        return true;
     }
 }

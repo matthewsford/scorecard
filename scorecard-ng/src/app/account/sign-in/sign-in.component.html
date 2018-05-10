@@ -6,47 +6,20 @@
             <h5 class="hint">Use your email address sign in or create a new account</h5>
         </label>
         <div class="login-group">
-            <input class="username" type="text" id="login_username" placeholder="Username" formControlName="username">
-            <input
-                    class="password"
-                    [type]="passwordInputType$ | async"
-                    id="login_password"
-                    placeholder="Password"
-                    formControlName="password"
-                    #password>
-            <div class="checkbox">
-                <input type="checkbox" id="checkrads_1" formControlName="showPassword">
-                <label for="checkrads_1">Show Password</label>
-            </div>
-            <div class="checkbox">
-                <input type="checkbox" id="rememberme" formControlName="rememberMe">
-                <label for="rememberme">
-                    Remember me
-                </label>
-            </div>
-            <div class="alert alert-warning" *ngIf="capsLockOn$ | async">
-                <div class="alert-items">
-                    <div class="alert-item static">
-                        <div class="alert-icon-wrapper">
-                            <!--<clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>-->
-                        </div>
-                        <span class="alert-text">caps lock is on</span>
-                    </div>
-                </div>
-                <button type="button" class="close" aria-label="Close">
-                    <!--<clr-icon aria-hidden="true" shape="close"></clr-icon>-->
-                </button>
-            </div>
+            <input class="username" type="email"
+                   id="login_username"
+                   placeholder="Username"
+                   formControlName="username"
+                   email="true">
+            <p *ngIf="usernameControl.errors && usernameControl.errors['required'] && (usernameControl.dirty || usernameControl.touched)">email address is quired</p>
+            <p *ngIf="usernameControl.errors && usernameControl.errors['email']">email address must be a valid email address</p>
             <!--
             <div class="error active">
                 Invalid user name or password
             </div>
             -->
-            <a class="nav-link signup" href="#" [routerLink]="['/register']" routerLinkActive="active">
-        <span class="nav-text">
-            Register for an Account
-      </span>
-            </a>
+            <button type="submit" class="btn btn-primary"
+             [disabled]="signInDisabled$ | async">Sign in or Register</button>
         </div>
 
         <div *ngIf="true">

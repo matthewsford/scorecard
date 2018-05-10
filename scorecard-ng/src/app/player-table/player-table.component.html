@@ -1,13 +1,31 @@
+<clr-datagrid>
+  <clr-dg-column>User ID</clr-dg-column>
+  <clr-dg-column>Name</clr-dg-column>
+  <clr-dg-column>Creation date</clr-dg-column>
+  <clr-dg-column>Favorite color</clr-dg-column>
+
+  <clr-dg-row *ngFor="let user of players | async">
+    <clr-dg-cell>{{user.id}}</clr-dg-cell>
+    <clr-dg-cell>{{user.name}}</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>{{(players | async).length}} players</clr-dg-footer>
+</clr-datagrid>
+
+<button type="button" class="btn btn-primary" routerLink="/players/new">
+  Add Player
+</button>
+
+
+<!--
 <div class="mat-elevation-z8">
   <mat-table #table [dataSource]="dataSource" matSort aria-label="Elements">
 
-    <!-- Id Column -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.id }}</mat-cell>
     </ng-container>
 
-    <!-- Name Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
@@ -27,3 +45,4 @@
     <i class="material-icons">add</i>
   </button>
 </div>
+-->

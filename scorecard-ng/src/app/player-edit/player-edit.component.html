@@ -1,13 +1,22 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSave()">
-  <input type="hidden" formControlName="id"/>
-  <mat-form-field class="example-full-width">
-    <input matInput placeholder="Name" formControlName="name"/>
-  </mat-form-field>
+    <input
+            type="hidden"
+            id="id"
+            formControlName="id"/>
+    <input type="text"
+           id="name"
+           placeholder="Name"
+           formControlName="name"/>
+    <br/>
+    <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="this.saveDisabled$ | async">
+        Save Player
+    </button>
 
-  <button id="savePlayer" type="submit" [disabled]="saveDisabled$" mat-fab>
-    <i class="material-icons">save</i>
-  </button>
+    <div *ngIf="true">
+        <p>Form value: {{ formGroup.value | json }}</p>
+        <p>Form status: {{ formGroup.status | json }}</p>
+    </div>
 </form>
-
-<p>Form value: {{ formGroup.value | json }}</p>
-<p>Form status: {{ formGroup.status | json }}</p>

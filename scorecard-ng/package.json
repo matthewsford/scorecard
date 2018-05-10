@@ -22,7 +22,6 @@
     "@angular/elements": "^6.0.0",
     "@angular/forms": "6.0.0",
     "@angular/http": "6.0.0",
-    "@angular/material": "6.0.0",
     "@angular/platform-browser": "6.0.0",
     "@angular/platform-browser-dynamic": "6.0.0",
     "@angular/pwa": "^0.6.0",
@@ -41,7 +40,6 @@
     "popper.js": "^1.14.3",
     "rxjs": "6.1.0",
     "rxjs-compat": "^6.0.0",
-    "scrypt-async-modern": "^3.0.6",
     "ts-trueskill": "^2.1.1",
     "zone.js": "^0.8.26"
   },
