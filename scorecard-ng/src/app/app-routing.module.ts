@@ -14,6 +14,7 @@ import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {IsAuthenticatedGuard} from './auth.guard';
 import {SignInComponent} from './account/sign-in';
 import {SignOutComponent} from './account/sign-out';
+import {AuthorizeComponent} from './authorize/authorize.component';
 
 const appRoutes: Routes = [
     /*
@@ -25,6 +26,10 @@ const appRoutes: Routes = [
     {
         path: 'sign-in',
         component: SignInComponent,
+    },
+    {
+        path: 'connect/authorize',
+        component: AuthorizeComponent,
     },
     {
         path: 'sign-out',
