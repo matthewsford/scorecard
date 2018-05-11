@@ -30,8 +30,14 @@ namespace ScorecardApi.Models {
   public class MongoProfile : Profile {
     // ReSharper disable once UnusedMember.Global
     public MongoProfile() {
-      CreateMap<ObjectId, string>().ConvertUsing(i => i == ObjectId.Empty ? null : i.ToString());
-      CreateMap<string, ObjectId>().ConvertUsing(s => s == null ? ObjectId.Empty : new ObjectId(s));
+      CreateMap<ObjectId, string>()
+      .ConvertUsing(i => i == ObjectId.Empty ?
+      null :
+      i.ToString());
+      CreateMap<string, ObjectId>()
+      .ConvertUsing(s => s == null ?
+      ObjectId.Empty :
+      new ObjectId(s));
     }
   }
 

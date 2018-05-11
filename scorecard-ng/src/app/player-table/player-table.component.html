@@ -5,11 +5,11 @@
   <clr-dg-column>Favorite color</clr-dg-column>
 
   <clr-dg-row *ngFor="let user of players | async">
-    <clr-dg-cell>{{user.id}}</clr-dg-cell>
-    <clr-dg-cell>{{user.name}}</clr-dg-cell>
+    <clr-dg-cell>{{ user.id }}</clr-dg-cell>
+    <clr-dg-cell>{{ user.name }}</clr-dg-cell>
   </clr-dg-row>
 
-  <clr-dg-footer>{{(players | async).length}} players</clr-dg-footer>
+  <clr-dg-footer>{{ (players | async).length }} players</clr-dg-footer>
 </clr-datagrid>
 
 <button type="button" class="btn btn-primary" routerLink="/players/new">

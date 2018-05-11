@@ -21,6 +21,7 @@ import {Injector, NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {LayoutModule} from '@angular/cdk/layout';
 import {createCustomElement} from '@angular/elements';
+import {ClarityModule} from '@clr/angular';
 
 import {AppComponent} from './app.component';
 import {PlayerEditComponent} from './player-edit';
@@ -29,7 +30,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {CoreModule} from './core';
 import {SharedModule} from './shared';
 import {environment} from '../environments/environment';
-import {AppNavComponent} from './app-nav/app-nav.component';
 import {AppShellComponent} from './app-shell/app-shell.component';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
@@ -39,14 +39,12 @@ import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-tabl
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {AccountModule} from './account/account.module';
 import {SignOutComponent} from './account/sign-out';
-import {ClarityModule} from '@clr/angular';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayerEditComponent,
     PageNotFoundComponent,
-    AppNavComponent,
     AppShellComponent,
     DashboardComponent,
     PlayerTableComponent,

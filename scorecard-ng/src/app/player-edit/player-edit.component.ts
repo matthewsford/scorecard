@@ -51,7 +51,7 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
         .subscribe((value) => {
             this.formGroup.markAsPristine();
           this.router.navigateByUrl('/players')
-              .then(value => {
+              .then(val => {
                 // TODO: What should I do?
               });
         });
