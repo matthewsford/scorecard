@@ -6,9 +6,5 @@ namespace ScorecardApi.Controllers
   public class SignInRequest
   {
     [DataMember] public string Email { get; internal set; }
-
-    [DataMember] public string Key { get; internal set; }
-
-    [DataMember] public bool RememberMe { get; internal set; }
   }
 }

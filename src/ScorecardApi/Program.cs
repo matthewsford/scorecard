@@ -24,8 +24,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 namespace ScorecardApi {
   public static class Program {
-    public static int Main(string[] args)
-    {
+    public static int Main(string[] args) {
+      Console.Title = "Scorecard API";
       CreateLogger();
       try {
         Log.Information("Starting web host");

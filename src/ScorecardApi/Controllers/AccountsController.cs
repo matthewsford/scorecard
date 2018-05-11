@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -29,6 +31,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
+using RestSharp;
 using ScorecardApi.Models;
 using Serilog;
 
@@ -61,57 +64,29 @@ namespace ScorecardApi.Controllers {
       _userStore = userStore;
     }
 
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] RegistrationRequest request) {
-      var user = new ApplicationUser {
-        UserName = request.Email,
-        Email = request.Email,
-        Key = request.Key
-      };
-      var result = await _userManager.CreateAsync(user);
-      if (result.Succeeded) {
-        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-        // Send an email with this link
-        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-        //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-        //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
-        await _signInManager.SignInAsync(user, isPersistent: false);
-        // _logger.LogInformation(3, "User created a new account with password.");
-        // return RedirectToAction(nameof(HomeController.Index), "Home");
-        return Ok();
-      }
-
-      return BadRequest();
-    }
-
     [HttpPost("sign-in")]
     [AllowAnonymous]
     public async Task<IActionResult> SignIn([FromBody] SignInRequest request) {
-      if (ModelState.IsValid) {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user.Key != null && user.Key == request.Key) {
-          await _signInManager.SignInAsync(user, request.RememberMe, "scrypt");
-          // _logger.LogInformation(1, "User logged in.");
-          return Ok();
-        }
+      //if (ModelState.IsValid) {
+      //var user = await _userManager.FindByEmailAsync(request.Email);
+      //if (user.Key != null && user.Key == request.Key) {
+      //await _signInManager.SignInAsync(user, true, "email");
+      // _logger.LogInformation(1, "User logged in.");
+      //return Ok();
+      //}
+      //}
 
-        /*
-        if (result.RequiresTwoFactor) {
-          return RedirectToAction(nameof(SendCode), new {ReturnUrl = returnUrl, RememberMe = model.RememberMe});
-        }
+      var client = new RestClient("https://api.sendinblue.com/v3/smtp/templates");
+      var restRequest = new RestRequest(Method.POST);
+      restRequest.AddBody(new {
+        sender = "Scorecard",
+        senderEmail = "scorecard@matthewford.us",
+        templateName = "sign.in.template",
+        subject = "Please Sign In",
+        htmlContent = "<h1>Hello, world!</h1>",
+      });
+      IRestResponse response = client.Execute(restRequest);
 
-        if (result.IsLockedOut) {
-          _logger.LogWarning(2, "User account locked out.");
-          return View("Lockout");
-        }
-        else {
-          ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-          return View(model);
-        }
-        */
-      }
 
       return StatusCode((int) HttpStatusCode.Unauthorized);
     }
@@ -124,22 +99,6 @@ namespace ScorecardApi.Controllers {
       }
 
       return StatusCode((int) HttpStatusCode.Unauthorized);
-    }
-
-    [HttpGet("{username}/hash-parameters")]
-    public ScryptParameters GetHashParameters(string username) {
-      var randomBytes = new byte[32];
-      _randomNumberGenerator.GetBytes(randomBytes);
-      var salt = Convert.ToBase64String(randomBytes);
-
-      return new ScryptParameters {
-        Username = username,
-        Cost = 14,
-        BlockSize = 16,
-        Parallelism = 1,
-        DkLen = 16,
-        Salt = salt,
-      };
     }
   }
 }

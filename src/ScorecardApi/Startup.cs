@@ -16,12 +16,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
-using IdentityServer4.MongoDB.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -68,8 +66,6 @@ namespace ScorecardApi {
     public void ConfigureServices(IServiceCollection services) {
       services.AddSingleton(Log.Logger);
       services.AddMongo(_configuration);
-
-
       services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
       services.AddTransient<IUserEmailStore<ApplicationUser>, ApplicationUserStore>();
       services.AddTransient<IUserLockoutStore<ApplicationUser>, ApplicationUserStore>();
@@ -86,11 +82,30 @@ namespace ScorecardApi {
       });
       services.AddSingleton(mapperConfig.CreateMapper());
 
-      ConfigureIdPServices(services);
-      ConfigureMvcServices(services);
+      services.AddIdentity<ApplicationUser, IdentityRole<ObjectId>>()
+        .AddDefaultTokenProviders();
+
+      // services.AddInMemoryPersistedGrants();
+      services.AddTransient<IEmailSender, EmailSender>();
+      services.Configure<IdentityOptions>(options =>
+      {
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+        options.Lockout.MaxFailedAccessAttempts = 10;
+        options.Lockout.AllowedForNewUsers = true;
+        options.User.RequireUniqueEmail = true;
+      });
+
+      services.ConfigureApplicationCookie(options =>
+      {
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.LoginPath = "/sign-in";
+        options.AccessDeniedPath = "/access-denied";
+        options.SlidingExpiration = true;
+      });
+
       services.AddMvc();
 
-      /*
       services.ConfigureApplicationCookie(options => {
         options.Events.OnRedirectToLogin = context => {
           context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
@@ -103,60 +118,6 @@ namespace ScorecardApi {
           return Task.CompletedTask;
         };
       });
-      */
-    }
-
-    private static void ConfigureMvcServices(IServiceCollection services) {
-      JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-      services.AddAuthentication(options => {
-          options.DefaultScheme = "Cookies";
-          options.DefaultChallengeScheme = "oidc";
-        })
-        .AddCookie("Cookies")
-        .AddOpenIdConnect("oidc", options => {
-          options.SignInScheme = "Cookies";
-
-          options.Authority = "http://localhost:4200";
-          options.RequireHttpsMetadata = false;
-
-          options.ClientId = "scorecard";
-          options.ClientSecret = "secret";
-          options.ResponseType = "code id_token";
-
-          options.SaveTokens = true;
-          options.GetClaimsFromUserInfoEndpoint = true;
-
-          options.Scope.Add("scorecard");
-        });
-    }
-
-    protected void ConfigureIdPServices(IServiceCollection services) {
-      services.AddIdentity<ApplicationUser, IdentityRole<ObjectId>>()
-        .AddDefaultTokenProviders();
-
-      var builder = services.AddIdentityServer(options => {
-          options.Events.RaiseErrorEvents = true;
-          options.Events.RaiseInformationEvents = true;
-          options.Events.RaiseFailureEvents = true;
-          options.Events.RaiseSuccessEvents = true;
-        })
-        .AddConfigurationStore(options => {
-          _configuration.GetSection("mongo").Bind(options);
-        })
-        .AddInMemoryIdentityResources(Config.GetIdentityResources())
-        .AddInMemoryApiResources(Config.GetApiResources())
-        .AddInMemoryClients(Config.GetClients())
-        .AddAspNetIdentity<ApplicationUser>();
-
-      if (_env.IsDevelopment()) {
-        builder.AddDeveloperSigningCredential();
-      }
-      else {
-        throw new Exception("need to configure key material");
-      }
-
-      services.AddAuthentication();
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
@@ -165,7 +126,6 @@ namespace ScorecardApi {
       }
 
       app.UseAuthentication();
-      app.UseIdentityServer();
       app.UseMvc();
     }
   }
