@@ -31,23 +31,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
-using RestSharp;
+// using RestSharp;
 using ScorecardApi.Models;
 using Serilog;
 
-namespace ScorecardApi.Controllers {
+namespace ScorecardApi.Controllers
+{
   [DataContract]
-  public class SaltResponse {
-    [DataMember(Name = "salt")]
-    public string Salt { get; set; }
+  public class SaltResponse
+  {
+    [DataMember(Name = "salt")] public string Salt { get; set; }
 
-    [DataMember(Name = "username")]
-    public string Username { get; set; }
+    [DataMember(Name = "username")] public string Username { get; set; }
   }
 
   [Route("api/accounts")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]
-  public class AccountsController : ControllerBase {
+  public class AccountsController : ControllerBase
+  {
     private readonly ILogger _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -57,7 +58,8 @@ namespace ScorecardApi.Controllers {
     public AccountsController(ILogger logger,
       UserManager<ApplicationUser> userManager,
       SignInManager<ApplicationUser> signInManager,
-      ApplicationUserStore userStore) {
+      ApplicationUserStore userStore)
+    {
       _logger = logger;
       _userManager = userManager;
       _signInManager = signInManager;
@@ -66,16 +68,27 @@ namespace ScorecardApi.Controllers {
 
     [HttpPost("sign-in")]
     [AllowAnonymous]
-    public async Task<IActionResult> SignIn([FromBody] SignInRequest request) {
-      //if (ModelState.IsValid) {
-      //var user = await _userManager.FindByEmailAsync(request.Email);
-      //if (user.Key != null && user.Key == request.Key) {
-      //await _signInManager.SignInAsync(user, true, "email");
-      // _logger.LogInformation(1, "User logged in.");
-      //return Ok();
-      //}
-      //}
+    public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
+    {
+      if (ModelState.IsValid)
+      {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+          await _userManager.CreateAsync(new ApplicationUser()
+          {
+            UserName = request.Email,
+            Email = request.Email,
+          });
+          user = await _userManager.FindByEmailAsync(request.Email);
+        }
 
+        await _signInManager.SignInAsync(user, true, "email");
+        // _logger.LogInformation(1, "User logged in.");
+        return Ok();
+      }
+
+/*
       var client = new RestClient("https://api.sendinblue.com/v3/smtp/templates");
       var restRequest = new RestRequest(Method.POST);
       restRequest.AddBody(new {
@@ -86,14 +99,16 @@ namespace ScorecardApi.Controllers {
         htmlContent = "<h1>Hello, world!</h1>",
       });
       IRestResponse response = client.Execute(restRequest);
-
+*/
 
       return StatusCode((int) HttpStatusCode.Unauthorized);
     }
 
     [HttpPost("sign-out")]
-    public async Task<IActionResult> SignOut() {
-      if (ModelState.IsValid) {
+    public async Task<IActionResult> SignOut()
+    {
+      if (ModelState.IsValid)
+      {
         await _signInManager.SignOutAsync();
         return Ok();
       }

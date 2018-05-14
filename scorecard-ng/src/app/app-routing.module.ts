@@ -7,14 +7,13 @@ import {AppShellComponent} from './app-shell/app-shell.component';
 import {CanLoseDataGuard} from './can-lose-data.guard';
 import {DashboardComponent} from './dashboard';
 import {PlayerTableComponent} from './player-table';
-import {PlayerResolver} from './player.resolve';
-import {PlayerService} from './player.service';
 import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-table.component';
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {IsAuthenticatedGuard} from './auth.guard';
 import {SignInComponent} from './account/sign-in';
 import {SignOutComponent} from './account/sign-out';
-import {AuthorizeComponent} from './authorize/authorize.component';
+import {Player} from './player';
+import {ResourceResolver} from './resource.resolver';
 
 const appRoutes: Routes = [
     /*
@@ -26,10 +25,6 @@ const appRoutes: Routes = [
     {
         path: 'sign-in',
         component: SignInComponent,
-    },
-    {
-        path: 'connect/authorize',
-        component: AuthorizeComponent,
     },
     {
         path: 'sign-out',
@@ -65,7 +60,7 @@ const appRoutes: Routes = [
                 canActivate: [IsAuthenticatedGuard],
                 canDeactivate: [CanLoseDataGuard],
                 resolve: {
-                    player: PlayerResolver
+                    player: ResourceResolver<Player>
                 }
             },
             {
