@@ -28,75 +28,77 @@ import {AccountService, SignInResult} from '../account.service';
 import {Observable} from 'rxjs/Observable';
 
 @Component({
-    selector: 'app-sign-in',
-    templateUrl: './sign-in.component.html',
-    styleUrls: ['./sign-in.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent implements OnInit, AfterViewInit {
-    formGroup: FormGroup;
-    errorMessage = '';
-    signInDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
-    @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
+  formGroup: FormGroup;
+  errorMessage = '';
+  signInDisabled$: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  @ViewChild(FormGroupDirective) fgd: FormGroupDirective;
 
-    constructor(private fb: FormBuilder,
-                private accountService: AccountService,
-                private router: Router,
-                private route: ActivatedRoute) {
-        this.createForm();
-    }
+  constructor(private fb: FormBuilder,
+              private accountService: AccountService,
+              private router: Router,
+              private route: ActivatedRoute) {
+    this.createForm();
+  }
 
-    ngAfterViewInit(): void {
-        this.fgd.ngSubmit.subscribe(() => {
-            this.accountService.signIn(this.username, null, false)
-                .subscribe((result: SignInResult) => {
-                    switch (result) {
-                        case SignInResult.Succeeded:
-                            this.navigateToReturnUrl();
-                            break;
-                        case SignInResult.InvalidCredentials:
-                            this.errorMessage = 'Username and/or password are invalid. Please try again.';
-                            break;
-                        case SignInResult.ServiceUnavailable:
-                            this.errorMessage = 'Service is unavailable. Please try again later.';
-                            break;
-                        case SignInResult.UnexpectedError:
-                            this.errorMessage = 'Something unexpected happened.';
-                            break;
-                        default:
-                            this.errorMessage = 'Something unexpected happened.';
-                    }
-                });
+  ngAfterViewInit(): void {
+    this.fgd.ngSubmit.subscribe(() => {
+      this.accountService.signIn(this.username, null, false)
+        .subscribe((result: SignInResult) => {
+          switch (result) {
+            case SignInResult.Succeeded:
+              this.navigateToReturnUrl();
+              break;
+            case SignInResult.InvalidCredentials:
+              this.errorMessage = 'Username and/or password are invalid. Please try again.';
+              break;
+            case SignInResult.ServiceUnavailable:
+              this.errorMessage = 'Service is unavailable. Please try again later.';
+              break;
+            case SignInResult.UnexpectedError:
+              this.errorMessage = 'Something unexpected happened.';
+              break;
+            default:
+              this.errorMessage = 'Something unexpected happened.';
+          }
         });
-    }
+    });
+  }
 
-    navigateToReturnUrl() {
-        this.route.queryParamMap.subscribe(queryParamMap => {
-            const returnUrl = queryParamMap.has('return-url') ? queryParamMap.get('return-url') : '/';
-            this.router.navigateByUrl(returnUrl)
-                .then(() => {
-                    // TODO: What should I do?
-                });
+  navigateToReturnUrl() {
+    this.route.queryParamMap.subscribe(queryParamMap => {
+      const returnUrl = queryParamMap.has('return-url') ? queryParamMap.get('return-url') : '/';
+      this.router.navigateByUrl(returnUrl)
+        .then(() => {
+          // TODO: What should I do?
         });
-    }
+    });
+  }
 
-    get username(): string {
-        return this.formGroup.get('username').value;
-    }
+  get username(): string {
+    return this.formGroup.get('username').value;
+  }
 
-    get usernameControl(): FormControl {
-        return this.formGroup.get('username') as FormControl;
-    }
+  get usernameControl(): FormControl {
+    return this.formGroup.get('username') as FormControl;
+  }
 
-    ngOnInit() {
-    }
+  ngOnInit() {
+  }
 
-    createForm() {
-        this.formGroup = this.fb.group({
-            username: ['', [Validators.required]],
-        });
-        this.formGroup.statusChanges
-            .pipe(map(status => status === PENDING || status === INVALID))
-            .subscribe(this.signInDisabled$);
-    }
+  createForm() {
+    this.formGroup = this.fb.group({
+      username: ['', [Validators.required]],
+    });
+    this.formGroup.statusChanges
+      .pipe(
+        map(status => status === PENDING || status === INVALID)
+      )
+      .subscribe(this.signInDisabled$);
+  }
 }

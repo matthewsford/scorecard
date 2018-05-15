@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Router} from '@angular/router';
 
-import {PlayerService} from '../player.service';
+import {ResourceService} from '../resource.service';
 import {Player} from '../player';
 
 @Component({
@@ -19,12 +19,12 @@ players: BehaviorSubject<Player[]> = new BehaviorSubject<Player[]>([]);
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['id', 'name'];
 
-  constructor(private playerService: PlayerService,
+  constructor(private playerService: ResourceService<Player>,
               private router: Router) {
   }
 
   ngOnInit() {
-    this.playerService.getPlayers()
+    this.playerService.getResources()
         .subscribe(this.players);
     // this.dataSource = new PlayerTableDataSource(this.paginator, this.sort, this.playerService);
     /*this.dataSource.unauthorized.subscribe(() => {

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -23,11 +24,13 @@ using AutoMapper.EquivalencyExpression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using ScorecardApi.Controllers;
 using ScorecardApi.Models;
 using Serilog;
 
@@ -104,7 +107,12 @@ namespace ScorecardApi {
         options.SlidingExpiration = true;
       });
 
-      services.AddMvc();
+      services.AddMvc(options => {
+        /*options.OutputFormatters.Add(new JsonLdOutputFormatter(
+          options.OutputFormatters
+            .OfType<JsonOutputFormatter>()
+            .FirstOrDefault()));*/
+      });
 
       services.ConfigureApplicationCookie(options => {
         options.Events.OnRedirectToLogin = context => {

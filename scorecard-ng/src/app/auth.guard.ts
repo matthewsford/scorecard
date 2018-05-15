@@ -5,20 +5,22 @@ import {Observable} from 'rxjs/Observable';
 import {AuthService} from './auth.service';
 
 export interface CanLoseData {
-    isDirty: boolean;
-    resourceDescription: string;
+  isDirty: boolean;
+  resourceDescription: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class IsAuthenticatedGuard implements CanActivate {
-    constructor(private authService: AuthService) {
-    }
+  constructor(private authService: AuthService) {
+  }
 
-    canActivate(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        return this.authService.isAuthenticated();
-    }
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    // TODO
+    // return this.authService.isAuthenticated();
+    return true;
+  }
 }

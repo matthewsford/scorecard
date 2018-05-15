@@ -13,83 +13,81 @@ import {IsAuthenticatedGuard} from './auth.guard';
 import {SignInComponent} from './account/sign-in';
 import {SignOutComponent} from './account/sign-out';
 import {Player} from './player';
-import {ResourceResolver} from './resource.resolver';
+import {PlayerResolver, ResourceResolver} from './resource.resolver';
+import {ResourceService} from './resource.service';
 
 const appRoutes: Routes = [
-    /*
-    {
-        path: 'account',
-        loadChildren: './account/account.module#AccountModule'
-    },
-    */
-    {
-        path: 'sign-in',
-        component: SignInComponent,
-    },
-    {
-        path: 'sign-out',
-        component: SignOutComponent,
-    },
-    {
+  /*
+  {
+      path: 'account',
+      loadChildren: './account/account.module#AccountModule'
+  },
+  */
+  {
+    path: 'sign-in',
+    component: SignInComponent,
+  },
+  {
+    path: 'sign-out',
+    component: SignOutComponent,
+  },
+  {
+    path: '',
+    component: AppShellComponent,
+    children: [
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [IsAuthenticatedGuard],
+      },
+      {
+        path: 'leaderboards',
+        component: LeaderboardsTableComponent,
+        canActivate: [IsAuthenticatedGuard],
+      },
+      {
+        path: 'leaderboards/:id',
+        component: LeaderboardComponent,
+        canActivate: [IsAuthenticatedGuard],
+      },
+      {
+        path: 'players',
+        component: PlayerTableComponent,
+        canActivate: [IsAuthenticatedGuard],
+      },
+      {
+        path: 'players/:id',
+        component: PlayerEditComponent,
+        canActivate: [IsAuthenticatedGuard],
+        canDeactivate: [CanLoseDataGuard],
+        resolve: {
+          player: PlayerResolver,
+        }
+      },
+      {
         path: '',
-        component: AppShellComponent,
-        children: [
-            {
-                path: 'dashboard',
-                component: DashboardComponent,
-                canActivate: [IsAuthenticatedGuard],
-            },
-            {
-                path: 'leaderboards',
-                component: LeaderboardsTableComponent,
-                canActivate: [IsAuthenticatedGuard],
-            },
-            {
-                path: 'leaderboards/:id',
-                component: LeaderboardComponent,
-                canActivate: [IsAuthenticatedGuard],
-            },
-            {
-                path: 'players',
-                component: PlayerTableComponent,
-                canActivate: [IsAuthenticatedGuard],
-            },
-            {
-                path: 'players/:id',
-                component: PlayerEditComponent,
-                canActivate: [IsAuthenticatedGuard],
-                canDeactivate: [CanLoseDataGuard],
-                resolve: {
-                    player: ResourceResolver<Player>
-                }
-            },
-            {
-                path: '',
-                redirectTo: '/dashboard',
-                pathMatch: 'full'
-            },
-            {path: '**', component: PageNotFoundComponent},
-        ]
-    },
+        redirectTo: '/dashboard',
+        pathMatch: 'full'
+      },
+      {path: '**', component: PageNotFoundComponent},
+    ]
+  },
 ];
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot(
-            appRoutes,
-            {
-                enableTracing: true,
-                preloadingStrategy: PreloadAllModules,
-            }
-        )
-    ],
-    exports: [
-        RouterModule
-    ],
-    providers: [
-        PlayerService,
-        PlayerResolver,
-    ],
+  imports: [
+    RouterModule.forRoot(
+      appRoutes,
+      {
+        enableTracing: true,
+        preloadingStrategy: PreloadAllModules,
+      }
+    )
+  ],
+  exports: [
+    RouterModule
+  ],
+  providers: [],
 })
 export class AppRoutingModule {
 }

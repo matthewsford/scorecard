@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {map, tap} from 'rxjs/operators';
 
 import {Player} from '../player';
-import {PlayerService} from '../player.service';
+import {ResourceService} from '../resource.service';
 import {CanLoseData} from '../can-lose-data.guard';
 
 @Component({
@@ -19,7 +19,7 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
   saveDisabled$: Observable<boolean>;
 
   constructor(private fb: FormBuilder,
-              private playerService: PlayerService,
+              private playerService: ResourceService<Player>,
               private route: ActivatedRoute,
               private router: Router) {
   }
@@ -44,7 +44,7 @@ export class PlayerEditComponent implements OnInit, CanLoseData {
   }
 
   onSave() {
-    this.playerService.savePlayer({
+    this.playerService.saveResource({
       id: this.id,
       name: this.name,
     })

@@ -1,18 +1,20 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {BehaviorSubject, of, Subject} from 'rxjs';
 
 import {Player} from './player';
 import {Resource} from './resource';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ResourceService<T extends Resource> {
   readonly urlFragment: string;
 
   constructor(private http: HttpClient) {
-    this.urlFragment = `/api/${T.name.toLowerCase()}`;
+    this.urlFragment = ''; // `/api/${T.name.toLowerCase()}`;
   }
 
   public saveResource(resource: T): Observable<T> {
@@ -21,7 +23,8 @@ export class ResourceService<T extends Resource> {
 
   public createResource(resource: T): Observable<T> {
     return this.http.post<T>(this.urlFragment,
-        {...resource, id: null});
+      // {...resource, id: null});
+      resource);
   }
 
   public updateResource(resource: T): Observable<T> {
@@ -33,10 +36,24 @@ export class ResourceService<T extends Resource> {
   }
 
   public getResource(id: string): Observable<T> {
-    return this.http.get<T>(`${this.urlFragment}/${id}`);
+    if (id === 'new') {
+      // const resource = new T();
+      // resource.id = 'new';
+      // return resource;
+      return new Subject<T>();
+    } else {
+      return this.http.get<T>(`${this.urlFragment}/${id}`);
+    }
   }
 
   public deleteResource(id: string): Observable<T> {
     return this.http.delete<T>(`${this.urlFragment}/${id}`);
   }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PlayerService extends ResourceService<Player> {
+
 }

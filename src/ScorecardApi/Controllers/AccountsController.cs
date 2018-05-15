@@ -52,13 +52,13 @@ namespace ScorecardApi.Controllers
     private readonly ILogger _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ApplicationUserStore _userStore;
+    private readonly IUserStore<ApplicationUser> _userStore;
     private readonly RandomNumberGenerator _randomNumberGenerator = RandomNumberGenerator.Create();
 
     public AccountsController(ILogger logger,
       UserManager<ApplicationUser> userManager,
       SignInManager<ApplicationUser> signInManager,
-      ApplicationUserStore userStore)
+      IUserStore<ApplicationUser> userStore)
     {
       _logger = logger;
       _userManager = userManager;
@@ -70,17 +70,24 @@ namespace ScorecardApi.Controllers
     [AllowAnonymous]
     public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
     {
-      if (ModelState.IsValid)
-      {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user == null)
-        {
-          await _userManager.CreateAsync(new ApplicationUser()
+      if (ModelState.IsValid) {
+        ApplicationUser user;
+        try {
+          user = await _userManager.FindByEmailAsync(request.Email);
+        }
+        catch (Exception) {
+
+          user = new ApplicationUser
           {
             UserName = request.Email,
             Email = request.Email,
-          });
-          user = await _userManager.FindByEmailAsync(request.Email);
+          };
+          var result = await _userManager.CreateAsync(user);
+          if (!result.Succeeded)
+          {
+            return BadRequest();
+          }
+
         }
 
         await _signInManager.SignInAsync(user, true, "email");
