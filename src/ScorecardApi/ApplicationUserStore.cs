@@ -142,7 +142,7 @@ namespace ScorecardApi {
     public async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken) {
       var filter = Builders<ApplicationUser>.Filter.Eq(p => p.NormalizedEmail, normalizedEmail);
       var users = await _users.FindAsync(filter, new FindOptions<ApplicationUser>(), cancellationToken);
-      return await users.FirstAsync(cancellationToken);
+      return await users.FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<string> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken) {

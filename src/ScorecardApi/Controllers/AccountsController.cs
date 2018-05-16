@@ -81,8 +81,10 @@ namespace ScorecardApi.Controllers
           {
             UserName = request.Email,
             Email = request.Email,
+            PasswordHash = "",
           };
           var result = await _userManager.CreateAsync(user);
+
           if (!result.Succeeded)
           {
             return BadRequest();
@@ -90,25 +92,29 @@ namespace ScorecardApi.Controllers
 
         }
 
-        await _signInManager.SignInAsync(user, true, "email");
+        if (user == null)
+        {
+          user = new ApplicationUser
+          {
+            UserName = request.Email,
+            Email = request.Email,
+            PasswordHash = "",
+          };
+          var result = await _userManager.CreateAsync(user);
+
+          if (!result.Succeeded)
+          {
+            return BadRequest();
+          }
+        }
+
+        Console.WriteLine($"signing in with {user.UserName}");
+        await _signInManager.SignInAsync(user, isPersistent: false);
         // _logger.LogInformation(1, "User logged in.");
         return Ok();
       }
 
-/*
-      var client = new RestClient("https://api.sendinblue.com/v3/smtp/templates");
-      var restRequest = new RestRequest(Method.POST);
-      restRequest.AddBody(new {
-        sender = "Scorecard",
-        senderEmail = "scorecard@matthewford.us",
-        templateName = "sign.in.template",
-        subject = "Please Sign In",
-        htmlContent = "<h1>Hello, world!</h1>",
-      });
-      IRestResponse response = client.Execute(restRequest);
-*/
-
-      return StatusCode((int) HttpStatusCode.Unauthorized);
+      return BadRequest();
     }
 
     [HttpPost("sign-out")]
