@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace ScorecardApi.Controllers
+namespace MatthewFordUs.ScorecardApi.Controllers
 {
   [DataContract]
   public class SignInRequest

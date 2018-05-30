@@ -3,7 +3,7 @@ using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ScorecardApi.Models {
+namespace MatthewFordUs.ScorecardApi.Models {
   public class Entity {
     [BsonId]
     public ObjectId Id { get; set; }

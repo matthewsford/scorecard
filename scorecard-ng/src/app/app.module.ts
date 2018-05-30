@@ -39,6 +39,8 @@ import {LeaderboardsTableComponent} from './leaderboards-table/leaderboards-tabl
 import {LeaderboardComponent} from './leaderboard/leaderboard.component';
 import {AccountModule} from './account/account.module';
 import {SignOutComponent} from './account/sign-out';
+import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
+import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import {SignOutComponent} from './account/sign-out';
     LeaderboardsTableComponent,
     LeaderboardComponent,
     SignOutComponent,
+    DynamicFormComponent,
+    DynamicFormQuestionComponent,
   ],
   entryComponents: [
     PlayerEditComponent,

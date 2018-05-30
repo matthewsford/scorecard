@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ScorecardApi.Models {
+namespace MatthewFordUs.ScorecardApi.Models {
   public class MyContext : DbContext {
     public DbSet<Player> Players { get; set; }
 

@@ -15,40 +15,30 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
-// using RestSharp;
-using ScorecardApi.Models;
 using Serilog;
+// using RestSharp;
 
-namespace ScorecardApi.Controllers
-{
+namespace MatthewFordUs.ScorecardApi.Controllers {
   [DataContract]
-  public class SaltResponse
-  {
-    [DataMember(Name = "salt")] public string Salt { get; set; }
+  public class SaltResponse {
+    [DataMember(Name = "salt")]
+    public string Salt { get; set; }
 
-    [DataMember(Name = "username")] public string Username { get; set; }
+    [DataMember(Name = "username")]
+    public string Username { get; set; }
   }
 
   [Route("api/accounts")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]
-  public class AccountsController : ControllerBase
-  {
+  public class AccountsController : ControllerBase {
     private readonly ILogger _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -58,8 +48,7 @@ namespace ScorecardApi.Controllers
     public AccountsController(ILogger logger,
       UserManager<ApplicationUser> userManager,
       SignInManager<ApplicationUser> signInManager,
-      IUserStore<ApplicationUser> userStore)
-    {
+      IUserStore<ApplicationUser> userStore) {
       _logger = logger;
       _userManager = userManager;
       _signInManager = signInManager;
@@ -68,47 +57,29 @@ namespace ScorecardApi.Controllers
 
     [HttpPost("sign-in")]
     [AllowAnonymous]
-    public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
-    {
+    public async Task<IActionResult> SignIn([FromBody] SignInRequest request) {
       if (ModelState.IsValid) {
-        ApplicationUser user;
+        ApplicationUser user = null;
         try {
           user = await _userManager.FindByEmailAsync(request.Email);
         }
         catch (Exception) {
+// TODO
+        }
 
-          user = new ApplicationUser
-          {
+        if (user == null) {
+          user = new ApplicationUser {
             UserName = request.Email,
             Email = request.Email,
             PasswordHash = "",
           };
           var result = await _userManager.CreateAsync(user);
 
-          if (!result.Succeeded)
-          {
-            return BadRequest();
-          }
-
-        }
-
-        if (user == null)
-        {
-          user = new ApplicationUser
-          {
-            UserName = request.Email,
-            Email = request.Email,
-            PasswordHash = "",
-          };
-          var result = await _userManager.CreateAsync(user);
-
-          if (!result.Succeeded)
-          {
+          if (!result.Succeeded) {
             return BadRequest();
           }
         }
 
-        Console.WriteLine($"signing in with {user.UserName}");
         await _signInManager.SignInAsync(user, isPersistent: false);
         // _logger.LogInformation(1, "User logged in.");
         return Ok();
@@ -118,10 +89,8 @@ namespace ScorecardApi.Controllers
     }
 
     [HttpPost("sign-out")]
-    public async Task<IActionResult> SignOut()
-    {
-      if (ModelState.IsValid)
-      {
+    public async Task<IActionResult> SignOut() {
+      if (ModelState.IsValid) {
         await _signInManager.SignOutAsync();
         return Ok();
       }

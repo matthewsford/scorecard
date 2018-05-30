@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace ScorecardApi {
+namespace MatthewFordUs.ScorecardApi {
   public class ApplicationRoleStore : IRoleStore<IdentityRole<ObjectId>>, IRoleStore<IdentityRole> {
     private readonly IMongoCollection<IdentityRole<ObjectId>> _roles;
 

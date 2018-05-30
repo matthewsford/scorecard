@@ -19,15 +19,14 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+using MatthewFordUs.ScorecardApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ScorecardApi.Models;
 using Serilog;
 
-namespace ScorecardApi.Controllers {
+namespace MatthewFordUs.ScorecardApi.Controllers {
   // [Authorize]
   [Route("api/players")]
   [SuppressMessage("ReSharper", "UnusedMember.Global")]

@@ -42,6 +42,7 @@ export class AccountService {
         private http: HttpClient,
         private meta: Meta) {
         // TODO: inject apiBase
+      // rel="http://www.w3.org/ns/hydra/core#apiDocumentation"/
         this.apiBase = this.meta.getTag('itemprop="api:base"').getAttribute('content');
     }
 

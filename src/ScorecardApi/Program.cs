@@ -22,7 +22,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace ScorecardApi {
+namespace MatthewFordUs.ScorecardApi {
   public static class Program {
     public static int Main(string[] args) {
       Console.Title = "Scorecard API";

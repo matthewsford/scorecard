@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {QuestionService} from '../question.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  questions: any[];
 
-  constructor() { }
+  constructor(service: QuestionService) {
+    this.questions = service.getQuestions();
+  }
 
   ngOnInit() {
   }

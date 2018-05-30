@@ -1,0 +1,15 @@
+<div>
+  <form [formGroup]="form">
+
+    <div *ngFor="let question of questions" class="form-row">
+      <app-question [question]="question" [form]="form"></app-question>
+    </div>
+
+    <br/>
+
+    <button type="submit"
+            class="btn btn-primary"
+            [disabled]="this.saveDisabled$ | async">>Save
+    </button>
+  </form>
+</div>

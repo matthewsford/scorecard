@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace ScorecardApi.Controllers {
+namespace MatthewFordUs.ScorecardApi.Controllers {
   [Produces("application/ld+json")]
   [Route("api/scorecard")]
   public class RootController : Controller {
@@ -21,21 +22,55 @@ namespace ScorecardApi.Controllers {
 
   [JsonConverter(typeof(JsonLdConverter))]
   [DataContract]
+  // [JsonLd(Context = "tsr", Type = "tsrrst")]
   public class RootResource {
+    [DataMember(Name = "@id")]
     public string Id { get; set; }
+
+    [DataMember(Name = "@type")]
+    public static string Type { get; }
+  }
+
+  public class JsonLdAttribute : Attribute {
+    public string Context { get; set; }
+
+    public string Type { get; set; }
   }
 
   public class JsonLdConverter : JsonConverter {
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-      writer.WriteStartObject();
-      writer.WriteEndObject();
+    // private readonly Type[] _types;
+
+    public JsonLdConverter() {
+      // params Type[] types
+      // _types = types;
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-      throw new NotImplementedException();
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+      var t = JToken.FromObject(value);
+
+      if (t.Type != JTokenType.Object) {
+        t.WriteTo(writer);
+      }
+      else {
+        var o = (JObject) t;
+        // IList<string> propertyNames = o.Properties().Select(p => p.Name).ToList();
+        // o.AddFirst(new JProperty("Keys", new JArray(propertyNames)));
+        o.WriteTo(writer);
+      }
     }
+
+    public override object ReadJson(
+      JsonReader reader,
+      Type objectType,
+      object existingValue,
+      JsonSerializer serializer) {
+      throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+    }
+
+    public override bool CanRead => false;
 
     public override bool CanConvert(Type objectType) {
+      // return _types.Any(t => t == objectType);
       return true;
     }
   }
